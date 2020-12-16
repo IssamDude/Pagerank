@@ -1,0 +1,20 @@
+[GENERATED OBJECT FILE]
+b__testmatrix.o
+[PROJECT FILES]
+C:\N7\1A\S5\PIM\Projet\Code\projet_pim.gpr
+20201216201156 cd3fa6bd8c87e6bb049b2cfe90e1c5a5
+[BOUND OBJECT FILES]
+C:\N7\1A\S5\PIM\Projet\Code\obj\matrix.o
+C:\N7\1A\S5\PIM\Projet\Code\obj\testmatrix.o
+[GENERATED SOURCE FILES]
+b__testmatrix.ads
+b__testmatrix.adb
+b__testmatrix.ali
+[RESULTING OPTIONS]
+-LC:\N7\1A\S5\PIM\Projet\Code\obj\
+-LC:\N7\1A\S5\PIM\Projet\Code\obj\
+-LC:/gnat/2020/lib/gcc/x86_64-pc-mingw32/9.3.1/adalib/
+-static
+-static-libgcc
+C:/gnat/2020/lib/gcc/x86_64-pc-mingw32/9.3.1/adalib/libgnat.a
+-Wl,--stack=0x2000000
