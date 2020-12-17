@@ -3,7 +3,7 @@ Code du projet pim en 1ere année N7. Language: ADA
 ## Usage de git
 ### Cloner un dépôt (chez vous ou sur les ordis de l'n7) :
 ```console
-jblancho@keunotor:~$ git clone https://github.com/Voyinno/Projet_PIM_ADA.git
+Ayman@LAPTOP:~$ git clone https://github.com/Voyinno/Projet_PIM_ADA.git
 ```
 
 ### Mettre à jour le dépôt:
