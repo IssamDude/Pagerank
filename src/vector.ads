@@ -1,5 +1,3 @@
-
-
 generic
     type T_Element is digits <>;
     CAPACITE : integer;
@@ -7,8 +5,6 @@ generic
 package VECTOR is
 
     type T_VECTOR is private;
-
-
 
 
     procedure Initialiser (vecteur : out T_VECTOR; N : in T_Element );
@@ -24,11 +20,8 @@ package VECTOR is
     procedure RemplacerElement ( V : in out T_VECTOR ; i : in  integer ; E : in T_Element );
 
 
-
 private
 
     type T_VECTOR is array (1..CAPACITE) of T_Element;
-
-
 
 end VECTOR;

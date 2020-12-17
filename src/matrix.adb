@@ -1,10 +1,7 @@
-
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
---with Ada.Unchecked_Deallocation;
 
 package body MATRIX is
-
 
     procedure Initialiser (N : in T_Element; M : out T_MATRIX) is
     begin
@@ -13,7 +10,6 @@ package body MATRIX is
                 M(i,k) := N;
             end loop;
         end loop;
-
     end Initialiser;
 
 
@@ -24,7 +20,6 @@ package body MATRIX is
                 M(i,k) := 1.0;
             end loop;
         end loop;
-
     end Initialiser;
 
 
@@ -36,7 +31,6 @@ package body MATRIX is
                 M(i,k) := M1(i,k) + M2(i,k);
             end loop;
         end loop;
-
     end Somme;
 
 
@@ -48,7 +42,6 @@ package body MATRIX is
                 M(i,k) := lambda * M(i,k);
             end loop;
         end loop;
-
     end Produit_Par_Scalaire;
 
 
@@ -61,16 +54,13 @@ package body MATRIX is
             end loop;
             New_Line;
         end loop;
-
-
     end Afficher;
+
 
     function Element ( M : in T_MATRIX ; i : in integer ; j : in integer ) return T_Element is
     begin
         return M(i,j);
     end Element;
-
-
 
 
 end MATRIX;
