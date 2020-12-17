@@ -6,3 +6,6 @@ obj/*
 *.bexch
 fichiers_test/*
 *~
+fichiers test/*
+'.\fichiers test\'
+fichiers\ test/*
