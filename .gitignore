@@ -1,1 +1,7 @@
 obj/
+*.ali
+*.o
+*.stderr
+*.stdout
+*.bexch
+
