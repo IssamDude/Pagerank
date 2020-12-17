@@ -23,7 +23,9 @@ package MATRIX is
    procedure Produit_Par_Scalaire (M : in out T_MATRIX; lambda : in T_Element);
 
    -- Procedure utile pour les tests sur les matrices de petite capacite
-   procedure Afficher (M : in T_MATRIX);
+    procedure Afficher (M : in T_MATRIX);
+
+    function Element ( M : in T_MATRIX ; i : in integer ; j : in integer ) return T_Element ; -- pré condition 1<=i<=Capacité
 
 
 

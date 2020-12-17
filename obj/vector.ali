@@ -9,12 +9,12 @@ RV NO_FLOATING_POINT
 RV NO_IO
 RV NO_IMPLEMENTATION_PRAGMAS
 
-U vector%b		vector.adb		7f104d8a NE OO PK GE IU
+U vector%b		vector.adb		99f58349 NE OO PK GE IU
 W ada%s			ada.ads			ada.ali
 W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 
-U vector%s		vector.ads		981ab933 BN EE NE OO PK GE IU
+U vector%s		vector.ads		3fb51f88 BN EE NE OO PK GE IU
 
 D ada.ads		20200819050644 76789da1 ada%s
 D a-except.ads		20200819050644 a7106115 ada.exceptions%s
@@ -40,8 +40,8 @@ D s-stoele.ads		20200819050648 2dc34a04 system.storage_elements%s
 D s-traent.ads		20200819050648 005bf670 system.traceback_entries%s
 D s-unstyp.ads		20200819050648 5ecf7212 system.unsigned_types%s
 D s-wchcon.ads		20200819050648 1b7d22d2 system.wch_con%s
-D vector.ads		20201216201422 981ab933 vector%s
-D vector.adb		20201216201422 bfb5a870 vector%b
+D vector.ads		20201217165700 3fb51f88 vector%s
+D vector.adb		20201217165644 feffc008 vector%b
 G a e
 G c Z s b [vector standard 7 9 none]
 X 1 ada.ads
@@ -53,22 +53,30 @@ X 7 a-textio.ads
 264U14*New_Line 26|48s7
 465U14*Put 26|41s7 44s10 47s7
 X 25 vector.ads
-4F9 T_Element 18r71 26r45 26|28r71
-5i4 CAPACITE{integer} 26r32 26|10r19 18r19 30r19 42r21
-7k9*VECTOR 4z9 5z4 26E10 30l5 30e11 26|5b14 57l5 57t11
-9A9*T_VECTOR(4F9) 14r42 16r30 16r48 16r67 18r49 20r32 26c10 26|8r42 16r29
-. 16r47 16r66 28r49 39r31
-14U15*Initialiser 14<28 26|8b15 13l8 13t19
-14a28 vecteur{9A9} 26|8b28 11m10
+4F10 T_Element 14r59 18r71 22r66 24r81 30r45 26|8r60 28r71 54r66 59r81
+5i5 CAPACITE{integer} 30r32 26|10r19 18r19 30r19 42r21
+7k9*VECTOR 4z10 5z5 30E10 34l5 34e11 26|5b14 68l5 68t11
+9A10*T_VECTOR(4F10) 14r42 16r30 16r48 16r67 18r49 20r32 22r31 24r45 30c10
+. 26|8r42 16r29 16r47 16r66 28r49 39r31 54r31 59r45
+14U15*Initialiser 14<28 14>52 26|8b15 13l8 13t19
+14a28 vecteur{9A10} 26|8b28 11m10
+14*52 N{4F10} 26|8b53 11r24
 16U15*Somme 16>22 16>40 16<58 26|16b14 24l8 24t13
-16a22 V1{9A9} 26|16b21 20r19
-16a40 V2{9A9} 26|16b39 20r27
-16a58 V3{9A9} 26|16b57 20m10
+16a22 V1{9A10} 26|16b21 20r19
+16a40 V2{9A10} 26|16b39 20r27
+16a58 V3{9A10} 26|16b57 20m10
 18U15*Produit_Par_Scalaire 18=37 18>59 26|28b15 35l9 35t29
-18a37 V1{9A9} 26|28b37 31m10 31r28
-18*59 lambda{4F9} 26|28b59 31r19
+18a37 V1{9A10} 26|28b37 31m10 31r28
+18*59 lambda{4F10} 26|28b59 31r19
 20U15*Afficher 20>25 26|39b14 52l9 52t17
-20a25 V{9A9} 26|39b24 44r14
+20a25 V{9A10} 26|39b24 44r14
+22V14*Element{4F10} 22>24 22>42 26|54b14 57l9 57t16
+22a24 V{9A10} 26|54b24 56r16
+22i42 i{integer} 26|54b42 56r18
+24U15*RemplacerElement 24=34 24>56 24>74 26|59b15 62l9 62t25
+24a34 V{9A10} 26|59b34 61m9
+24i56 i{integer} 26|59b56 61r11
+24*74 E{4F10} 26|59b74 61r15
 X 26 vector.adb
 10i11 i{integer} 11r18
 18i11 i{integer} 20r13 20r22 20r30

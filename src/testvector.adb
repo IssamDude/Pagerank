@@ -22,14 +22,15 @@ procedure testvector is
    --M_Produit : T_MATRIX;
 begin
 
-   Initialiser(V1);
-   Initialiser(V2);
+   Initialiser(V1, 1.0);
+   Initialiser(V2, 1.0);
    Produit_Par_Scalaire(V2, 3.0);
    Somme(V1,V2, V3);
    New_Line;
    Afficher(V1);
    New_Line;
    Afficher(V3);
+   Put(V2(1));
 
 
 

@@ -134,9 +134,17 @@
       <vfs_project>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\projet_pim.gpr</vfs_project>
       <vfs_file>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\src\vector.ads</vfs_file>
     </file_marker>
-    <file_marker current="true" column=" 54" line=" 11" >
+    <file_marker column=" 54" line=" 11" >
       <vfs_project>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\projet_pim.gpr</vfs_project>
       <vfs_file>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\src\vectmat.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 31" >
+      <vfs_project>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\projet_pim.gpr</vfs_project>
+      <vfs_file>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\src\main.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 4" line=" 3" >
+      <vfs_project>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\projet_pim.gpr</vfs_project>
+      <vfs_file>C:\Users\issam\Desktop\projet_pim\Projet_PIM_ADA\src\testprod.adb</vfs_file>
     </file_marker>
   </Project>
 </Locations>
