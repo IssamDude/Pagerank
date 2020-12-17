@@ -1,4 +1,3 @@
-
 generic
    -- type reel de precision quelconque
    type T_Element is digits <>;
@@ -25,6 +24,7 @@ package MATRIX is
 
    -- Procedure utile pour les tests sur les matrices de petite capacite
    procedure Afficher (M : in T_MATRIX);
+
 
 
 

@@ -1,12 +1,12 @@
 
 
 generic
-   type T_Element is digits <>;
-   CAPACITE : integer;
+    type T_Element is digits <>;
+    CAPACITE : integer;
 
 package VECTOR is
 
-   type T_VECTOR is private;
+    type T_VECTOR is private;
 
 
 
