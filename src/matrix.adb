@@ -65,6 +65,11 @@ package body MATRIX is
 
     end Afficher;
 
+    function Element ( M : in T_MATRIX ; i : in integer ; j : in integer ) return T_Element is
+    begin
+        return M(i,j);
+    end Element;
+
 
 
 

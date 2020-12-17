@@ -5,7 +5,7 @@ with VECTOR;
 
 procedure Main is
 
-   Type T_Double is digits 6;
+    Type T_Double is digits 6;
 
 
     package Vector_integer is
@@ -19,13 +19,13 @@ procedure Main is
         use MATRIX_INTEGER;
         procedure vectmatprod ( V : in T_VECTOR ; M : in T_MATRIX ; R : out T_VECTOR ) is -- on a d�j� un vecteur initialis� � 1/capacit� au d�but de l'algo
         begin
-            vecteur.Initialiser(vecteur => R);
-            -- for k in 1..CAPACITE loop
-            --   R(k):=0.0;
-            -- end loop;
+            Vector_integer.Initialiser(vecteur => R,
+                                   N       => 0.0);
+
             for i in 1..CAPACITE loop
                 for j in 1..CAPACITE loop
-                    R(j):=R(j)+V(j)*M(i,j); -- R est initialis� � des 0 partout ( par exemple )
+                    RemplacerElement(R, j, Element(R,j)+Element(V,j)*Element(M,i,j));
+
                 end loop;
             end loop;
         end vectmatprod;
@@ -38,11 +38,12 @@ procedure Main is
             I:=C;
             Get(F,C);
             J:=C;
-            H(I,J):=1.0;
+            H(I,J):=1.0; -- à changer REMPLIER LE FICHIER OCCURENCE -- RELECTURE DES FICHIERS POUR CHANGER 1 EN 1 / OCC(I) et les 0 en 1/CAPACITE POUR OBTENIR MATRICE S
+                         -- G = alpha*S + (1-alpha)*(1/capacite)*ones(
             if End_Of_Line(F) then
                 NL:=NL+1;
                 New_line;
-         end if;
+            end if;
 
         end loop;
     end Calcul;
@@ -68,7 +69,7 @@ begin
         I:=C;
         Get(F,C);
         J:=C;
-        H(I,J):=1.0;
+        H(I,J):=1.0;  -- à changer
         if End_Of_Line(F) then
             NL:=NL+1;
             New_line;
@@ -81,3 +82,4 @@ begin
 
 
 end Main;
+

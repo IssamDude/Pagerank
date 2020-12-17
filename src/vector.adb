@@ -5,10 +5,10 @@ with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
 package body VECTOR is
 
 
-    procedure Initialiser (vecteur : out T_VECTOR) is
+    procedure Initialiser (vecteur : out T_VECTOR ; N : in T_Element ) is
     begin
       for i in 1..CAPACITE loop
-         vecteur(i) := 1.0;
+         vecteur(i) := N;
       end loop;
    end Initialiser;
 
@@ -50,6 +50,17 @@ package body VECTOR is
 
 
     end Afficher;
+
+    function Element ( V : in T_VECTOR ; i : in integer ) return T_Element is
+    begin
+        return V(i);
+    end Element;
+
+    procedure RemplacerElement ( V : in out T_VECTOR ; i : in  integer ; E : in T_Element ) is
+    begin
+        V(i):=E;
+    end RemplacerElement;
+
 
 
 
