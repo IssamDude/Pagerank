@@ -1,1 +1,10 @@
+/obj/*
 obj/
+obj/*
+*.ali
+*.o
+*.stderr
+*.stdout
+*.bexch
+
+

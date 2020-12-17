@@ -1,8 +1,0 @@
-vectmat.adb:14:17: array type required in indexed component
-vectmat.adb:14:23: array type required in indexed component
-vectmat.adb:14:28: array type required in indexed component
-vectmat.adb:14:33: array type required in indexed component
-vectmat.ads:11:36: "T_VECTOR" is not visible (more references follow)
-vectmat.ads:11:36: non-visible declaration at vector.ads:9
-vectmat.ads:11:54: "T_MATRIX" is not visible
-vectmat.ads:11:54: non-visible declaration at matrix.ads:10
