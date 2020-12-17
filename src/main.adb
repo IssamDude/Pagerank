@@ -17,7 +17,7 @@ procedure Main is
                 new MATRIX (T_Element => T_Double,
                             CAPACITE  => N);
         use MATRIX_INTEGER;
-        procedure vectmatprod ( V : in T_VECTOR ; M : in T_MATRIX ; R : out T_VECTOR ) is -- on a déjà un vecteur initialisé à 1/capacité au début de l'algo
+        procedure vectmatprod ( V : in T_VECTOR ; M : in T_MATRIX ; R : out T_VECTOR ) is -- on a dï¿½jï¿½ un vecteur initialisï¿½ ï¿½ 1/capacitï¿½ au dï¿½but de l'algo
         begin
             vecteur.Initialiser(vecteur => R);
             -- for k in 1..CAPACITE loop
@@ -25,7 +25,7 @@ procedure Main is
             -- end loop;
             for i in 1..CAPACITE loop
                 for j in 1..CAPACITE loop
-                    R(j):=R(j)+V(j)*M(i,j); -- R est initialisé à des 0 partout ( par exemple )
+                    R(j):=R(j)+V(j)*M(i,j); -- R est initialisï¿½ ï¿½ des 0 partout ( par exemple )
                 end loop;
             end loop;
         end vectmatprod;
