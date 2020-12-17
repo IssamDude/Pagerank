@@ -12,7 +12,7 @@ procedure Main is
      new Vector (T_Element => T_Double, CAPACITE  => 6);
    use Vector_integer;
 
-   Procedure Calcul (N : in integer, H : out) is
+   Procedure Calcul (N : in integer) is
       package MATRIX_INTEGER is
         new MATRIX (T_Element => T_Double,
                     CAPACITE  => N);
