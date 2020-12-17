@@ -6,4 +6,6 @@ obj/*
 *.stderr
 *.stdout
 *.bexch
-
+/fichiers_test/*
+fichiers_test/
+fichiers_test/*
