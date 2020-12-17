@@ -1,4 +1,4 @@
-obj/
+obj/*
 *.ali
 *.o
 *.stderr
