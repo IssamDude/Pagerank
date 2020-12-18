@@ -21,6 +21,7 @@ procedure Main is
 
         H : T_MATRIX;
         OCC : T_VECTOR;
+        CAPACITE : integer := N;
 
         procedure vectmatprod ( V : in T_VECTOR ; M : in T_MATRIX ; R : out T_VECTOR ) is -- on a d�j� un vecteur initialis� � 1/capacit� au d�but de l'algo
         begin
@@ -44,10 +45,10 @@ procedure Main is
             J:=C;
             --On doit ecrire des procedures RemplacerElement dans Matrix pour pouvoir ecrire la ligne suivante
             H(I,J):=1.0; -- à changer REMPLIER LE FICHIER OCCURENCE -- RELECTURE DES FICHIERS POUR CHANGER 1 EN 1 / OCC(I) et les 0 en 1/CAPACITE POUR OBTENIR MATRICE S
-                         -- G = alpha*S + (1-alpha)*(1/capacite)*ones(
+                         -- G = alpha*S + (1-alpha)*(1/capacite)*ones(capacite)
             if End_Of_Line(F) then
                 NL:=NL+1;
-                RemplacerElement(OCC,I, Element(OCC,I));
+                RemplacerElement(OCC,I, Element(OCC,I)+1.0);
                 New_line;
             end if;
         end loop;
