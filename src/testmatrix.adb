@@ -24,7 +24,10 @@ begin
    New_Line;
    Afficher(M2);
    New_Line;
-   Afficher(M_Somme);
+    Afficher(M_Somme);
+    ajoutconstante(M_Somme, 0.3);
+    New_Line;
+    Afficher(M_Somme);
 
 
 end testmatrix;

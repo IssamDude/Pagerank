@@ -22,9 +22,11 @@ package MATRIX is
     -- Procedure utile pour les tests sur les matrices de petite capacite
     procedure Afficher (M : in T_MATRIX);
 
-    function Element ( M : in T_MATRIX; i : in integer; j : in integer ) return T_Element ; -- pré condition 1<=i<=Capacité
+    function Element ( M : in T_MATRIX; i : in integer; j : in integer ) return T_Element ; -- prÃ© condition 1<=i<=CapacitÃ©
 
     procedure RemplacerElement (M : in out T_MATRIX; i : in  integer; j : in Integer; E : in T_Element );
+
+    procedure ajoutconstante ( M : in out T_MATRIX ; a : in T_Element ) ;
 
 private
 
