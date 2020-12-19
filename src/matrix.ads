@@ -26,7 +26,7 @@ package MATRIX is
 
     procedure RemplacerElement (M : in out T_MATRIX; i : in  integer; j : in Integer; E : in T_Element );
 
-    procedure ajoutconstante ( M : in out T_MATRIX ; a : in T_Element ) ;
+    procedure Ajoutconstante ( M : in out T_MATRIX ; a : in T_Element ) ;
 
 private
 

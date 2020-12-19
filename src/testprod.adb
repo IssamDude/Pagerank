@@ -27,7 +27,7 @@ procedure testprod is
         Vector_integer.Initialiser(vecteur => R, N => 0.0);
         for i in 1..CAPACITE loop
             for j in 1..CAPACITE loop
-                RemplacerElement(R, j, Element(R,j)+Element(V,j)*Element(M,i,j));
+                RemplacerElement(R, i, Element(R,i)+Element(V,j)*Element(M,j,i));
                 --Element(R,j):=Element(R,j)+Element(V,j)*Element(M,i,j); -- R est initialis� � des 0 partout ( par exemple )
             end loop;
         end loop;

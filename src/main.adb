@@ -1,6 +1,5 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
-with Ada.Float_Text_IO; use Ada.Float_Text_IO;
 with Ada.Command_Line; use  Ada.Command_Line;
 with MATRIX;
 with VECTOR;
@@ -36,36 +35,28 @@ procedure Main is
         Alpha : T_Double := 0.85; -- qu'il faut changer en fonction de la ligne de commande
         --v: T_Double :=0.0;
         Nb_Iteration : integer := 150; -- qu'il faut changer en fonction de la ligne de commande
-        Pi: T_VECTOR; -- Vecteur poids
+        Pk: T_VECTOR; -- Vecteur poids
+        Pk1: T_VECTOR;
         --Pr: T_VECTOR; --pagerank vector
 
 
         procedure vectmatprod ( V : in T_VECTOR ; M : in T_MATRIX ; R : out T_VECTOR ) is -- on a d�j� un vecteur initialis� � 1/capacit� au d�but de l'algo
         begin
-            Vector_integer.Initialiser(vecteur => R, N=> 0.0);
-            for i in 1..CAPACITE loop
-                for j in 1..CAPACITE loop
-                    RemplacerElement(R, j, Element(R,j)+Element(V,j)*Element(M,i,j));
+            Initialiser(R, 0.0);
+            for i in 0..CAPACITE-1 loop
+                for j in 0..CAPACITE-1 loop
+                    RemplacerElement(R, i, Element(R,i)+Element(V,j)*Element(M,j,i));
                 end loop;
             end loop;
         end vectmatprod;
 
-        procedure vectmatprod1 ( V : in out T_VECTOR ; M : in T_MATRIX ) is -- on a d�j� un vecteur initialis� � 1/capacit� au d�but de l'algo
-        begin
-            Vector_integer.Initialiser(vecteur => V, N=> 1.0/N_T_Double);
-            for i in 0..CAPACITE-1 loop
-                for j in 0..CAPACITE-1 loop
-                    RemplacerElement(V, j, Element(V,j)+Element(V,j)*Element(M,i,j));
-                end loop;
-            end loop;
-        end vectmatprod1;
 
     begin
 
         --Dans cette partie de code, on lit le fichier.net et on recupere la matrice H et le vecteur OCC qui contient le nombre d'occurence de chaque noeud
-        Initialiser(Pi,1.0/N_T_Double); -- Le vecteur poids est initialisé à 1/capacite
+        Initialiser(Pk, 1.0/N_T_Double); -- Le vecteur poids est initialisé à 1/capacite
         Put_Line("Vecteur poids initial : ");
-        Afficher(Pi);
+        Afficher(Pk);
         Initialiser(0.0, H);
         Initialiser(OCC,0.0);
         NL := 0; -- Compteur de nombres de lignes
@@ -106,7 +97,6 @@ procedure Main is
         Afficher(H);
         New_Line;
         Put_Line("Le vecteur d'occurrences OCC :");
-        New_Line;
         Afficher(OCC);
         New_Line;
 
@@ -134,22 +124,26 @@ procedure Main is
         Close(F);
         Afficher(H); -- Qui est en fait la matrice S
         New_Line;
+
+
+
         Produit_Par_Scalaire(H,Alpha);
         New_Line;
         Afficher(H); -- Qui est enfait le premier terme de la matrice G
         New_Line;
-        ajoutconstante(H, (1.0-alpha)/N_T_Double);
+        Ajoutconstante(H, (1.0-alpha)/N_T_Double);
         Put_Line("Matrice G");
         Afficher(H); -- Qui est en fait la matrice G.
 
         -- Algorithme du pagerank :
-        for i in 1..Nb_Iteration loop
-            vectmatprod1(Pi,H);
+        for k in 1..Nb_Iteration loop
+            vectmatprod(Pk, H, Pk1);
+            Pk := Pk1;
         end loop;
         New_Line;
         Put_Line("Vecteur poids final : ");
         New_line;
-        Afficher(Pi);
+        Afficher(Pk);
 
 
     end Calcul;
@@ -161,13 +155,9 @@ begin
     Open(F,In_File,"exemple_sujet.net");
     Get(F,Elm_Fichier); -- On GET le premier nombre du fichier.net qui correspond au nombre de noeuds NN.
     NN:=Elm_Fichier; -- On stocke ce nombre.
-    Put_Line("Le nombre de noeuds est : ");
+    Put("Le nombre de noeuds est : ");
+    Put(NN, 1);
     New_Line;
-
-    Put(NN);
-    New_Line;
-    New_Line;
-
     Close(F);
     Calcul(NN);
 

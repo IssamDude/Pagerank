@@ -67,14 +67,14 @@ package body MATRIX is
         M(i,j) := E;
     end RemplacerElement;
 
-    procedure ajoutconstante ( M : in out T_MATRIX ; a : in T_Element ) is
+    procedure Ajoutconstante ( M : in out T_MATRIX ; a : in T_Element ) is
         begin
         for i in 0..CAPACITE-1 loop
             for k in 0..CAPACITE-1 loop
-                M(i,k):=M(i,k)+a;
+                M(i,k):= M(i,k) + a;
             end loop;
         end loop;
-    end ajoutconstante;
+    end Ajoutconstante;
 
 
 
