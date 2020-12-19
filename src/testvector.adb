@@ -23,7 +23,6 @@ begin
    Afficher(V1);
    New_Line;
    Afficher(V3);
-   Put(V2(1));
 
 
 end testvector;

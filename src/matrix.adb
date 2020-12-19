@@ -5,8 +5,8 @@ package body MATRIX is
 
     procedure Initialiser (N : in T_Element; M : out T_MATRIX) is
     begin
-        for i in 1..CAPACITE loop
-            for k in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
+            for k in 0..CAPACITE-1 loop
                 M(i,k) := N;
             end loop;
         end loop;
@@ -15,8 +15,8 @@ package body MATRIX is
 
     procedure Initialiser (M : out T_MATRIX) is
     begin
-        for i in 1..CAPACITE loop
-            for k in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
+            for k in 0..CAPACITE-1 loop
                 M(i,k) := 1.0;
             end loop;
         end loop;
@@ -26,8 +26,8 @@ package body MATRIX is
 
     procedure Somme (M1 : in T_MATRIX; M2 : in T_MATRIX; M : out T_MATRIX) is
     begin
-        for i in 1..CAPACITE loop
-            for k in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
+            for k in 0..CAPACITE-1 loop
                 M(i,k) := M1(i,k) + M2(i,k);
             end loop;
         end loop;
@@ -37,8 +37,8 @@ package body MATRIX is
 
     procedure Produit_Par_Scalaire (M : in out T_MATRIX; lambda : in T_Element) is
     begin
-        for i in 1..CAPACITE loop
-            for k in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
+            for k in 0..CAPACITE-1 loop
                 M(i,k) := lambda * M(i,k);
             end loop;
         end loop;
@@ -48,8 +48,8 @@ package body MATRIX is
 
     procedure Afficher (M : in T_MATRIX) is
     begin
-        for i in 1..CAPACITE loop
-            for k in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
+            for k in 0..CAPACITE-1 loop
                 Put(M(i,k)'Image);
             end loop;
             New_Line;
@@ -61,6 +61,11 @@ package body MATRIX is
     begin
         return M(i,j);
     end Element;
+
+    procedure RemplacerElement (M : in out T_MATRIX; i : in  integer; j : in Integer; E : in T_Element )is
+    begin
+        M(i,j) := E;
+    end RemplacerElement;
 
 
 end MATRIX;

@@ -6,7 +6,7 @@ package body VECTOR is
 
     procedure Initialiser (vecteur : out T_VECTOR ; N : in T_Element ) is
     begin
-        for i in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
             vecteur(i) := N;
         end loop;
     end Initialiser;
@@ -14,7 +14,7 @@ package body VECTOR is
 
     procedure Somme (V1 : in T_VECTOR; V2 : in T_VECTOR; V3 : out T_VECTOR)is
     begin
-        for i in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
             V3(i) := V1(i) + V2(i);
         end loop;
     end Somme;
@@ -23,7 +23,7 @@ package body VECTOR is
 
     procedure Produit_Par_Scalaire (V1 : in out T_VECTOR; lambda : in T_Element) is
     begin
-        for i in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
             V1(i) := lambda * V1(i);
         end loop;
     end Produit_Par_Scalaire;
@@ -33,7 +33,7 @@ package body VECTOR is
     procedure Afficher (V : in T_VECTOR) is
     begin
         Put("[");
-        for i in 1..CAPACITE loop
+        for i in 0..CAPACITE-1 loop
             Put(V(i)'Image);
         end loop;
         Put(" ]");

@@ -2,7 +2,6 @@ generic
     type T_Element is digits <>;
     CAPACITE : integer;
 
-
 package MATRIX is
 
     type T_MATRIX is  private;
@@ -23,11 +22,12 @@ package MATRIX is
     -- Procedure utile pour les tests sur les matrices de petite capacite
     procedure Afficher (M : in T_MATRIX);
 
-    function Element ( M : in T_MATRIX ; i : in integer ; j : in integer ) return T_Element ; -- pré condition 1<=i<=Capacité
+    function Element ( M : in T_MATRIX; i : in integer; j : in integer ) return T_Element ; -- pré condition 1<=i<=Capacité
 
+    procedure RemplacerElement (M : in out T_MATRIX; i : in  integer; j : in Integer; E : in T_Element );
 
 private
 
-    type T_MATRIX is array (1..CAPACITE, 1..CAPACITE) of T_Element;
+    type T_MATRIX is array (0..CAPACITE-1, 0..CAPACITE-1) of T_Element;
 
 end MATRIX;

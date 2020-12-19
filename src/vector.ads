@@ -15,13 +15,13 @@ package VECTOR is
 
     procedure Afficher (V : in T_VECTOR);
 
-    function Element ( V : in T_VECTOR ; i : in integer ) return T_Element; -- pré condition 1<=i<=Capacité
+    function Element ( V : in T_VECTOR; i : in integer ) return T_Element; -- pré condition 1<=i<=Capacité
 
-    procedure RemplacerElement ( V : in out T_VECTOR ; i : in  integer ; E : in T_Element );
+    procedure RemplacerElement ( V : in out T_VECTOR; i : in  integer; E : in T_Element );
 
 
 private
 
-    type T_VECTOR is array (1..CAPACITE) of T_Element;
+    type T_VECTOR is array (0..CAPACITE-1) of T_Element;
 
 end VECTOR;
