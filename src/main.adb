@@ -1,8 +1,9 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
-with Ada.Command_Line; use  Ada.Command_Line;
+with Ada.Command_Line; use Ada.Command_Line;
 with MATRIX;
 with VECTOR;
+with LISTE; use LISTE;
 
 procedure Main is
 
@@ -27,8 +28,6 @@ procedure Main is
         I : Integer; -- Ligne de la matrice H/ Element de la premiere colonne du fichier
         J : Integer; -- Colonne de la matrice H/ Element de la deuxieme colonne du fichier
         Elm_Fichier : Integer; --Entier qui stocke les elements qu'on recupere des fichiers
-        Elm_Fichier_Temporaire_I : Integer;
-        Elm_Fichier_Temporaire_J : Integer;
         F: File_Type; --Fichier qu'on va ouvrir
         NL : Integer; -- Nombre de lignes du fichier
         N_T_Double : T_Double := T_Double(N);
@@ -38,6 +37,10 @@ procedure Main is
         Pk: T_VECTOR; -- Vecteur poids
         Pk1: T_VECTOR;
         --Pr: T_VECTOR; --pagerank vector
+        Fichier : T_LISTE; --Liste qui va contenir les elements du fichier.net tries sans les doublons
+        Courant : T_LISTE;
+        Test_Doublon : Boolean;
+
 
 
         procedure vectmatprod ( V : in T_VECTOR ; M : in T_MATRIX ; R : out T_VECTOR ) is -- on a d�j� un vecteur initialis� � 1/capacit� au d�but de l'algo
@@ -60,38 +63,29 @@ procedure Main is
         Initialiser(0.0, H);
         Initialiser(OCC,0.0);
         NL := 0; -- Compteur de nombres de lignes
+        Initialiser(Fichier); --Initialise la liste qui va contenir les doublons dans le fichier.net
 
         Open(F,In_File,"exemple_sujet.net");
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul
 
 
-        --Les 7 prochaines lignes sont ecrite pour pouvoir gerer la presence de doublon dans le fichier
-        --Les variables Elm_Fichier_Temporaire stockent les valeurs de I et J qui precede pour pouvoir les comparer avec les valeurs actuelles
-        Get(F,Elm_Fichier);
-        Elm_Fichier_Temporaire_I:=Elm_Fichier;
-        Get(F,Elm_Fichier);
-        Elm_Fichier_Temporaire_J:=Elm_Fichier;
-        RemplacerElement(H, Elm_Fichier_Temporaire_I, Elm_Fichier_Temporaire_J, 1.0);
-        RemplacerElement(OCC,Elm_Fichier_Temporaire_I, Element(OCC,Elm_Fichier_Temporaire_I)+1.0);
-        NL := NL + 1;
 
         while not End_Of_File(F) loop
             Get(F,Elm_Fichier);
             I:=Elm_Fichier;
             Get(F,Elm_Fichier);
             J:=Elm_Fichier;
-            if (Elm_Fichier_Temporaire_I = I and Elm_Fichier_Temporaire_J = J) then
-                NL := NL +1;
+            Enregistrer (Fichier, I, J, Test_Doublon);
+            if Test_Doublon then
+                NL := NL + 1;
             else
-                RemplacerElement(H, I, J, 1.0);
                 NL:=NL+1;
                 RemplacerElement(OCC,I, Element(OCC,I)+1.0);
-                Elm_Fichier_Temporaire_I := I;
-                Elm_Fichier_Temporaire_J := J;
+                RemplacerElement(H, I, J, 1.0);
             end if;
+
         end loop;
         Close(F);
-
         Put_Line("La Matrice H : ");
         New_Line;
         Afficher(H);
@@ -101,10 +95,13 @@ procedure Main is
         New_Line;
 
 
-        --Dans cette partie on relit le fichier.net pour modifier la matrice H et obtenir la matrice S
+        --Dans cette partie on lit la liste Fichier pour modifier la matrice H et obtenir la matrice S
 
         Open(F,In_File,"exemple_sujet.net");
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul
+
+        Initialiser(Courant);
+        Assigner(Fichier, Courant);
 
         for K in 0..N-1 loop
             if Element(OCC,K) = 0.0 then
@@ -113,10 +110,9 @@ procedure Main is
                 end loop;
             else
                 for L in 1..Integer(Element(OCC, K)) loop
-                    Get(F,Elm_Fichier);
-                    I:=Elm_Fichier;
-                    Get(F,Elm_Fichier);
-                    J:=Elm_Fichier;
+                    Element_I (Courant, I);
+                    Element_J (Courant, J);
+                    Suivant (Courant);
                     RemplacerElement(H, I, J, 1.0/Element(OCC, I));
                 end loop;
             end if;
@@ -125,17 +121,18 @@ procedure Main is
         Afficher(H); -- Qui est en fait la matrice S
         New_Line;
 
-
+        --Dans cette partie, on modifie la matrice S pour obtenir la matrice G
 
         Produit_Par_Scalaire(H,Alpha);
         New_Line;
-        Afficher(H); -- Qui est enfait le premier terme de la matrice G
+        Afficher(H);
         New_Line;
         Ajoutconstante(H, (1.0-alpha)/N_T_Double);
         Put_Line("Matrice G");
         Afficher(H); -- Qui est en fait la matrice G.
 
-        -- Algorithme du pagerank :
+        -- Dans cette partie, on calcule le poids de chaque noeud de maniere iteratif
+
         for k in 1..Nb_Iteration loop
             vectmatprod(Pk, H, Pk1);
             Pk := Pk1;
@@ -160,11 +157,6 @@ begin
     New_Line;
     Close(F);
     Calcul(NN);
-
-
-
-
-
 
 end Main;
 
