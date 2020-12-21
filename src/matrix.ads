@@ -23,7 +23,7 @@ package MATRIX is
     procedure Afficher (M : in T_MATRIX);
 
     -- Fonction qui nous renvoie l'element de coordonnees (i,j) d'une matrice M.
-    function Element ( M : in T_MATRIX; i : in integer; j : in integer ) return T_Element ; -- pre condition 1<=i<=Capacite
+    function Element ( M : in T_MATRIX; i : in integer; j : in integer ) return T_Element ; -- pre condition 1<=i<=Capacite ; 1<=j<=Capacite
 
     -- Procedure qui remplace l'element de coordonnees (i,j) d'une matrice.
     procedure RemplacerElement (M : in out T_MATRIX; i : in  integer; j : in Integer; E : in T_Element );

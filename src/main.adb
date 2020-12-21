@@ -1,6 +1,8 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
 with Ada.Command_Line; use Ada.Command_Line;
+with Ada.Strings.Bounded; use Ada.Strings.Bounded;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with MATRIX;
 with VECTOR;
 with LISTE; use LISTE;
@@ -12,6 +14,9 @@ procedure Main is
     NN : Integer;  -- Le nombre de noeuds de notre reseau, indique dans la premiere ligne de tous les fichiers.net
     Elm_Fichier: Integer; -- Entiers present dans les fichiers.net
     F: File_Type; -- Fichier.net
+    NomF : string := "exemple_sujet.net";
+    type LArgument is array (1..6) of Unbounded_string;
+    Listarg : LArgument;
 
     Procedure Calcul (N : in integer) is  -- Notre procedure principale, prend en argument N qui est NN : Le nombre de noeuds de notre reseau.
         package MATRIX_INTEGER is
@@ -64,7 +69,7 @@ procedure Main is
         NL := 0; -- Compteur de nombres de lignes
         Initialiser(Fichier); --Initialise la liste qui va contenir les doublons dans le fichier.net
 
-        Open(F,In_File,"exemple_sujet.net");
+        Open(F,In_File,NomF);
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul, voir ligne 152 ( ATTENTION SI LA LIGNE CHANGE )
 
 
@@ -99,7 +104,7 @@ procedure Main is
 
         ------------------------------------------------------------------------ Deuxieme parcours du fichier parcours pour passer de la matrice H à S.
 
-        Open(F,In_File,"exemple_sujet.net");
+        Open(F,In_File,NomF);
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul
 
         Initialiser(Courant);
@@ -153,8 +158,17 @@ procedure Main is
 
 begin
 
+    -- Gestion de la ligne de commande : à mettre dans une procedure qui renvoie
+    for i in 1..6 loop
+        Listarg(i):=To_Unbounded_String("0");
+    end loop;
+    Put_Line("Nom du programme: " & Command_Name) ;
+    for I in 1..Argument_Count loop
+        Put_Line("Argument" & Natural'Image(I) & ": " & Argument(I)) ;
+        Listarg(I):=To_Unbounded_String(Argument(I));
+    end loop;
 
-    Open(F,In_File,"exemple_sujet.net");
+    Open(F,In_File,NomF);
     Get(F,Elm_Fichier); -- On GET le premier nombre du fichier.net qui correspond au nombre de noeuds NN.
     NN:=Elm_Fichier; -- On stocke ce nombre.
     Put("Le nombre de noeuds est : ");
