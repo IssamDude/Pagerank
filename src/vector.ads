@@ -20,10 +20,13 @@ package VECTOR is
     procedure Afficher (V : in T_VECTOR);
 
     -- Fonction qui renvoie l'element i d'un vecteur.
-    function Element ( V : in T_VECTOR; i : in integer ) return T_Element; -- pre condition 1<=i<=Capacite
+    function Element ( V : in T_VECTOR; i : in integer ) return T_Element with
+            Pre => 0 <= i and i < CAPACITE;
+
 
     -- Procedure qui remplace l'element i d'un vecteur.
-    procedure RemplacerElement ( V : in out T_VECTOR; i : in  integer; E : in T_Element ); -- pre condition 1<=i<=Capacite
+    procedure RemplacerElement ( V : in out T_VECTOR; i : in  integer; E : in T_Element )with
+            Pre => 0 <= i and i < CAPACITE;
 
 
 private
