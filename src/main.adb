@@ -1,24 +1,105 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
 with Ada.Command_Line; use Ada.Command_Line;
-with Ada.Strings.Bounded; use Ada.Strings.Bounded;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with MATRIX;
 with VECTOR;
 with LISTE; use LISTE;
+with Command_Exception; use Command_Exception;
 
 procedure Main is
 
     Type T_Double is digits 6; -- Precision variable, grace a la generecite du type T_Element.
 
+    function "+" (Item : in String) return Unbounded_String
+                  renames To_Unbounded_String;
+
+    function "-" (Item : in Unbounded_String) return String
+                  renames To_String;
+
     NN : Integer;  -- Le nombre de noeuds de notre reseau, indique dans la premiere ligne de tous les fichiers.net
     Elm_Fichier: Integer; -- Entiers present dans les fichiers.net
     F: File_Type; -- Fichier.net
-    NomF : string := "exemple_sujet.net";
-    type LArgument is array (1..6) of Unbounded_string;
-    Listarg : LArgument;
+    NomF : Unbounded_String := +"worm.net";
+    Alpha : T_Double := 0.85; -- qu'il faut changer en fonction de la ligne de commande
+    Nb_Iteration : integer := 150; -- qu'il faut changer en fonction de la ligne de commande
+    Implantation : Unbounded_String := +"Creuse";
+    Nb_Argument : Integer;
 
-    Procedure Calcul (N : in integer) is  -- Notre procedure principale, prend en argument N qui est NN : Le nombre de noeuds de notre reseau.
+
+
+    procedure Gestion_Command (Nb_Argument : in Integer) is
+
+        Taille_nom_fichier : Integer;
+        Compt : Integer := 0;
+        Nb_I : Integer := 0;
+        Nb_A : Integer := 0;
+        Nb_P : Integer := 0;
+
+    begin
+        --for I in 1..Nb_Argument loop
+            --Put_Line("Argument" & Natural'Image(I) & ": " & Argument(I)) ;
+        --end loop;
+
+        Taille_nom_fichier := Length(+Argument(Nb_Argument));
+        if Nb_Argument > 0 and Nb_Argument <= 6 then
+            if element(+Argument(Nb_Argument),Taille_nom_fichier - Compt) /= 't' then
+                raise Parametre_Command_Exception;
+            else
+                Compt := Compt + 1;
+            end if;
+            if element(+Argument(Nb_Argument),Taille_nom_fichier - Compt) /= 'e' then
+                raise Parametre_Command_Exception;
+            else
+                Compt := Compt + 1;
+            end if;
+            if element(+Argument(Nb_Argument),Taille_nom_fichier - Compt) /= 'n' then
+                raise Parametre_Command_Exception;
+            else
+                Compt := Compt + 1;
+            end if;
+            if element(+Argument(Nb_Argument),Taille_nom_fichier - Compt) /= '.' then
+                raise Parametre_Command_Exception;
+            else
+                Compt := Compt + 1;
+            end if;
+            NomF := +Argument(Nb_Argument);
+
+            for K in 1..Nb_Argument-1 loop
+                if Argument(K) = "-I" then
+                    if Integer'Value(Argument(K+1)) > 0 and Nb_I = 0 then
+                        Nb_Iteration := Integer'Value(Argument(K+1));
+                        Nb_I := Nb_I + 1;
+                    else
+                        raise Parametre_Command_Exception;
+                    end if;
+                elsif Argument(K) = "-A" then
+                    if T_Double'Value(Argument(K+1)) >= 0.0 and T_Double'Value(Argument(K+1)) <= 1.0 and Nb_A = 0 then
+                        Alpha := T_Double'Value(Argument(K+1));
+                        Nb_A := Nb_A + 1;
+                    else
+                        raise Parametre_Command_Exception;
+                    end if;
+                elsif Argument(K) = "-P" then
+                    if Nb_P = 0 then
+                        Implantation := +"Naive";
+                        Nb_P := Nb_P + 1;
+                    else
+                        raise Parametre_Command_Exception;
+                    end if;
+                end if;
+            end loop;
+        else
+            raise Parametre_Command_Exception;
+        end if;
+
+    exception
+        when Constraint_Error =>
+            raise Parametre_Command_Exception;
+    end Gestion_Command;
+
+
+    Procedure Naive (N : in integer) is  -- Notre procedure principale, prend en argument N qui est NN : Le nombre de noeuds de notre reseau.
         package MATRIX_INTEGER is
                 new MATRIX (T_Element => T_Double, CAPACITE  => N);
         use MATRIX_INTEGER;
@@ -29,15 +110,13 @@ procedure Main is
 
         H : T_MATRIX; -- Matrice naive que l'on va manipuler tout le long du programme
         OCC : T_VECTOR;  -- Vecteur dans lequel on met le nombre d'occurence de chaque noeud
-        CAPACITE : Integer := N; -- Capacite du type vecteur et matrice
+        CAPACITE :constant Integer := N; -- Capacite du type vecteur et matrice
         I : Integer; -- Ligne de la matrice H/ Element de la premiere colonne du fichier
         J : Integer; -- Colonne de la matrice H/ Element de la deuxieme colonne du fichier
         Elm_Fichier : Integer; --Entier qui stocke les elements qu'on recupere des fichiers
         F: File_Type; --Fichier qu'on va ouvrir
         NL : Integer; -- Nombre de lignes du fichier
-        N_T_Double : T_Double := T_Double(N); -- Variable qui stocke la conversion de l'entier N en T_Double.
-        Alpha : T_Double := 0.85; -- qu'il faut changer en fonction de la ligne de commande
-        Nb_Iteration : integer := 150; -- qu'il faut changer en fonction de la ligne de commande
+        N_T_Double : constant T_Double := T_Double(N); -- Variable qui stocke la conversion de l'entier N en T_Double.
         Pk: T_VECTOR; -- Vecteur poids
         Pk1: T_VECTOR;
         --Pr: T_VECTOR; --pagerank vector
@@ -52,7 +131,7 @@ procedure Main is
             Initialiser(R, 0.0);
             for i in 0..CAPACITE-1 loop
                 for j in 0..CAPACITE-1 loop
-                    RemplacerElement(R, i, Element(R,i)+Element(V,j)*Element(M,j,i));
+                    RemplacerElement(R, i, (Element(R,i)+Element(V,j)*Element(M,j,i)) );
                 end loop;
             end loop;
         end vectmatprod;
@@ -69,7 +148,7 @@ procedure Main is
         NL := 0; -- Compteur de nombres de lignes
         Initialiser(Fichier); --Initialise la liste qui va contenir les doublons dans le fichier.net
 
-        Open(F,In_File,NomF);
+        Open(F,In_File,-NomF);
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul, voir ligne 152 ( ATTENTION SI LA LIGNE CHANGE )
 
 
@@ -104,10 +183,11 @@ procedure Main is
 
         ------------------------------------------------------------------------ Deuxieme parcours du fichier parcours pour passer de la matrice H à S.
 
-        Open(F,In_File,NomF);
+        Open(F,In_File,-NomF);
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul
 
         Initialiser(Courant);
+
         Assigner(Fichier, Courant);
 
         for K in 0..N-1 loop
@@ -152,30 +232,45 @@ procedure Main is
         Afficher(Pk);
         New_line;
 
+    end Naive;
 
-    end Calcul;
-
+    procedure Creuse is
+    begin
+        Put_Line("Implantation Creuse pas encore prete. Veuillez ajouter -P dans la ligne de commande pour utiliser l'implantation Naive");
+    end Creuse;
 
 begin
 
-    -- Gestion de la ligne de commande : à mettre dans une procedure qui renvoie
-    for i in 1..6 loop
-        Listarg(i):=To_Unbounded_String("0");
-    end loop;
-    Put_Line("Nom du programme: " & Command_Name) ;
-    for I in 1..Argument_Count loop
-        Put_Line("Argument" & Natural'Image(I) & ": " & Argument(I)) ;
-        Listarg(I):=To_Unbounded_String(Argument(I));
-    end loop;
+    Nb_Argument := Argument_Count;
+    Gestion_Command(Nb_Argument);
 
-    Open(F,In_File,NomF);
+    Open(F,In_File,-NomF);
     Get(F,Elm_Fichier); -- On GET le premier nombre du fichier.net qui correspond au nombre de noeuds NN.
     NN:=Elm_Fichier; -- On stocke ce nombre.
+    Close(F);
+
+
+    if Implantation = +"Naive" then
+        Naive(NN);
+    elsif Implantation = +"Creuse" then
+        Creuse;
+    end if;
+
+
     Put("Le nombre de noeuds est : ");
     Put(NN, 1);
     New_Line;
-    Close(F);
-    Calcul(NN);
+    Put("Nb iterations : ");
+    Put(Nb_Iteration, 1);
+    New_Line;
+    Put("Alpha : ");
+    Put(Alpha'Image);
+    New_Line;
 
+exception
+    when Parametre_Command_Exception =>
+        Put_Line("Erreur: Les parametres entres dans la ligne de commande sont incompatibles");
+    when Name_Error =>
+        Put_Line("Erreur: Le fichier entre n'est pas present dans le repertoire");
 end Main;
 

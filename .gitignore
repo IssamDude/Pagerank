@@ -12,7 +12,6 @@ fichiers\ test/*
 *.net
 *.ord
 *.p
-<<<<<<< HEAD
-=======
 *.exe
->>>>>>> branche2
+src/main
+src/testcommand
