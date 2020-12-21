@@ -9,3 +9,6 @@ fichiers_test/*
 fichiers test/*
 '.\fichiers test\'
 fichiers\ test/*
+*.net
+*.ord
+*.p
