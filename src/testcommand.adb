@@ -15,4 +15,3 @@ begin
       Put_Line("Argument" & Natural'Image(I) & ": " & Argument(I)) ;
    end loop ;
 end testcommand;
-u_ztg 

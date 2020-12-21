@@ -5,7 +5,7 @@ with Ada.Command_Line; use  Ada.Command_Line;
 with MATRIX;
 with VECTOR;
 
-procedure main1 is
+procedure ancien_main is
 
     Type T_Double is digits 6;
 
@@ -176,4 +176,4 @@ begin
 
 
 
-end main1;
+end ancien_main;
