@@ -6,6 +6,7 @@ with MATRIX;
 with VECTOR;
 with LISTE; use LISTE;
 with Command_Exception; use Command_Exception;
+with MATRICE_CREUSE;
 
 procedure Main is
 
@@ -287,14 +288,63 @@ procedure Main is
         Close (Fichier_noeuds);
 
 
-
-
-
     end Naive;
 
-    procedure Creuse is
+
+
+    procedure Creuse(N : in Integer) is
+
+        package Matrice_Creuse_Double is
+                new MATRICE_CREUSE (T_Element => T_Double, CAPACITE  => N);
+        use Matrice_Creuse_Double;
+
+        package Vector_integer is
+                new Vector (T_Element => T_Double, CAPACITE  => N);
+        use Vector_integer;
+
+        H_Creuse : T_LIGNE;
+        FichierNet : File_Type;
+        Elm_Fichier : Integer;
+        I : Integer;
+        J : Integer;
+        Test_Doublon : Boolean;
+        NL : Integer;
+        OCC : T_VECTOR;
+
+
     begin
-        Put_Line("Implantation Creuse pas encore prete. Veuillez ajouter -P dans la ligne de commande pour utiliser l'implantation Naive");
+        --Put_Line("Implantation Creuse pas encore prete. Veuillez ajouter -P dans la ligne de commande pour utiliser l'implantation Naive");
+
+        --Creer la matrice H_Creuse
+
+        Initialiser(H_Creuse);
+        Open(FichierNet, In_File, -NomF);
+        Get(FichierNet, Elm_Fichier);
+
+        NL := 0;
+
+        While not End_Of_File(FichierNet) loop
+            Get(FichierNet, Elm_Fichier);
+            I := Elm_Fichier;
+            Get(FichierNet, Elm_Fichier);
+            J := Elm_Fichier;
+            Enregistrer(H_Creuse, I, J, T_Double(1), Test_Doublon);
+            if Test_Doublon then
+                NL := NL + 1;
+            else
+                NL := NL + 1;
+                RemplacerElement(OCC, I, Element(OCC, I) + 1.0);
+            end if;
+        end loop;
+        Close(FichierNet);
+
+        --Passer de la matrice H_Creuse à S_Creuse
+
+        for l in 0..N-1 loop
+            RemplacerLigne(H_Creuse, l, Element(OCC, l), N);
+        end loop;
+
+
     end Creuse;
 
 begin
@@ -311,7 +361,7 @@ begin
     if Implantation = +"Naive" then
         Naive(NN);
     elsif Implantation = +"Creuse" then
-        Creuse;
+        Creuse(NN);
     end if;
 
 

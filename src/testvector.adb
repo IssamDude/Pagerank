@@ -4,7 +4,7 @@ with VECTOR;
 
 procedure testvector is
 
-   Type T_Double is digits 13 ;
+   Type T_Double is digits 1 ;
 
    package Vector_integer is
      new Vector (T_Element => T_Double, CAPACITE  => 6);
