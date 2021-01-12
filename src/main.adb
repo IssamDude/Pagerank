@@ -28,7 +28,7 @@ procedure Main is
 
 
 
-    procedure Gestion_Command (Nb_Argument : in Integer) is
+    procedure Gestion_Command (Nb_Argument : in Integer) is -- Procédure qui gère la ligne de commande
 
         Taille_nom_fichier : Integer;
         Compt : Integer := 0;
@@ -123,6 +123,17 @@ procedure Main is
         Fichier : T_LISTE; --Liste qui va contenir les elements du fichier.net tries sans les doublons
         Courant : T_LISTE;
         Test_Doublon : Boolean;
+        Fichier_poids : File_Type; -- Fichier.p en sortie.
+        Fichier_noeuds : File_Type; -- Fichier.ord en sortie.
+
+        type T_Couple is record
+            poids : T_Double;
+            noeud : Integer;
+        end record;
+        type T_Tableau_couple is array (0..N-1) of T_Couple;
+
+        Tableau_Couple : T_Tableau_couple;
+
 
 
 
@@ -135,14 +146,29 @@ procedure Main is
                 end loop;
             end loop;
         end vectmatprod;
-
-
+        procedure tri_insertion( T : in out T_Tableau_couple) is -- Tri du tableau contenant les couples (poids, noeuds) par ordre croissant des noeuds.
+            x : T_Double; -- Paramètre formel représentant le poids d'un couple
+            y : integer; -- Paramètre formel représentant le noeud d'un couple
+            j : integer;
+        begin
+            for i in 1..N-1 loop
+                x := T(i).poids;
+                y := T(i).noeud;
+                j := i ;
+                while j > 0 and then T(j - 1).poids > x loop
+                    T(j):= T(j - 1);
+                    j := j - 1;
+                end loop;
+                T(j).poids := x;
+                T(j).noeud := y;
+            end loop;
+        end tri_insertion;
     begin
 
         --Dans cette partie de code, on lit le fichier.net et on recupere la matrice H et le vecteur OCC qui contient le nombre d'occurence de chaque noeud
         Initialiser(Pk, 1.0/N_T_Double); -- Le vecteur poids est initialise a 1/CAPACITE;
-        --Put_Line("Vecteur poids initial : ");
-        --Afficher(Pk);
+                                         --Put_Line("Vecteur poids initial : ");
+                                         --Afficher(Pk);
         Initialiser(0.0, H); -- La matrice H est initialisé à 0 partout.
         Initialiser(OCC,0.0); -- Le vecteur occurence aussi.
         NL := 0; -- Compteur de nombres de lignes
@@ -225,12 +251,44 @@ procedure Main is
         for k in 1..Nb_Iteration loop
             vectmatprod(Pk, H, Pk1);
             Pk := Pk1;
-        end loop;
+        end loop; -- Le vecteur Pk est finalisé ici, mais non trié.
+
+
 
         Put_Line("Vecteur poids final : ");
         New_line;
         Afficher(Pk);
-        New_line;
+        --New_Line;
+        for i in 0..N-1 loop
+            Tableau_Couple(i).poids:=Element(Pk,i);
+            Tableau_Couple(i).noeud:=i;
+        end loop;
+        -- Tri du Tableau_Couple selon les poids décroissants :
+        tri_insertion( Tableau_Couple );
+        for i in 0..N-1 loop -- Pk est trié par ordre décroissant à la fin de cette boucle.
+            RemplacerElement(Pk,i,Tableau_Couple(N-1-i).poids);
+        end loop;
+        Afficher(Pk);
+
+
+        --Creation du fichier poids.p
+        Create (Fichier_poids, Out_File, "poids.p");
+        Put_Line(Fichier_poids, Integer'Image(N) & T_Double'Image(Alpha) & Integer'Image(Nb_Iteration) );
+        for i in 0..N-1 loop
+            Put_Line (Fichier_poids, T_Double'Image(Element(Pk, i) ));
+        end loop;
+        Close (Fichier_poids);
+
+        -- Creation du fichier pagerank.ord
+        Create (Fichier_noeuds, Out_File, "pagerank.ord");
+        for i in 0..N-1 loop
+            Put_Line (Fichier_noeuds, Integer'Image(Tableau_Couple(N-1-i ).noeud));
+        end loop;
+        Close (Fichier_noeuds);
+
+
+
+
 
     end Naive;
 
