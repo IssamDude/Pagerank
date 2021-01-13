@@ -87,7 +87,7 @@ package body MATRICE_CREUSE is
     end Enregistrer;
     
     
-    procedure RemplacerLigne (tableau : in out T_LIGNE; i : in Integer; occurence : in T_Element;  : in : Integer) is
+    procedure RemplacerLigne (tableau : in out T_LIGNE; i : in Integer; occurence : in T_Element; N: in Integer) is
         Courant : T_LISTE;
     begin
         Courant := tableau(i);
@@ -98,7 +98,7 @@ package body MATRICE_CREUSE is
             end loop;
         else
             while Courant /= null loop
-                Courant.all.Valeur := T_Element(1/occurence);
+                Courant.all.Valeur := T_Element(1)/occurence;
                 Courant:= Courant.all.Suivant;
             end loop;
         end if;

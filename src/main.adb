@@ -320,8 +320,8 @@ procedure Main is
         Initialiser(H_Creuse);
         Open(FichierNet, In_File, -NomF);
         Get(FichierNet, Elm_Fichier);
-
         NL := 0;
+        Initialiser(OCC,0.0);
 
         While not End_Of_File(FichierNet) loop
             Get(FichierNet, Elm_Fichier);

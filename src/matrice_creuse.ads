@@ -19,7 +19,7 @@ package MATRICE_CREUSE is
     --Si l'element (i,j) est présent, la valeur correspondante est remplacée par val  
     procedure Enregistrer (tableau : in out T_LIGNE; i : in Integer; j : in Integer; val : in T_Element; Doublon : out Boolean);
     
-    procedure RemplacerLigne (tableau : in out T_LIGNE; i : in Integer; occurence : in T_Element; N : in : Integer);
+    procedure RemplacerLigne (tableau : in out T_LIGNE; i : in Integer; occurence : in T_Element; N : in Integer);
     
     -- Procedure utile pour afficher des listes de petite taille, notamment pour les tests.
     procedure Afficher(tableau : in T_LIGNE);
