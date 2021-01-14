@@ -6,7 +6,7 @@ with MATRIX;
 with VECTOR;
 with LISTE; use LISTE;
 with Command_Exception; use Command_Exception;
-with MATRICE_CREUSE;
+with MATRICE_CREUSE_VECTOR;
 
 procedure Main is
 
@@ -21,7 +21,7 @@ procedure Main is
     NN : Integer;  -- Le nombre de noeuds de notre reseau, indique dans la premiere ligne de tous les fichiers.net
     Elm_Fichier: Integer; -- Entiers present dans les fichiers.net
     F: File_Type; -- Fichier.net
-    NomF : Unbounded_String := +"worm.net";
+    NomF : Unbounded_String := +"exemple_sujet.net";
     Alpha : T_Double := 0.85; -- qu'il faut changer en fonction de la ligne de commande
     Nb_Iteration : integer := 150; -- qu'il faut changer en fonction de la ligne de commande
     Implantation : Unbounded_String := +"Creuse";
@@ -29,7 +29,7 @@ procedure Main is
 
 
 
-    procedure Gestion_Command (Nb_Argument : in Integer) is -- Procédure qui gère la ligne de commande
+    procedure Gestion_Command (Nb_Argument : in Integer) is -- ProcÃ©dure qui gÃ¨re la ligne de commande
 
         Taille_nom_fichier : Integer;
         Compt : Integer := 0;
@@ -148,8 +148,8 @@ procedure Main is
             end loop;
         end vectmatprod;
         procedure tri_insertion( T : in out T_Tableau_couple) is -- Tri du tableau contenant les couples (poids, noeuds) par ordre croissant des noeuds.
-            x : T_Double; -- Paramètre formel représentant le poids d'un couple
-            y : integer; -- Paramètre formel représentant le noeud d'un couple
+            x : T_Double; -- ParamÃ¨tre formel reprÃ©sentant le poids d'un couple
+            y : integer; -- ParamÃ¨tre formel reprÃ©sentant le noeud d'un couple
             j : integer;
         begin
             for i in 1..N-1 loop
@@ -170,7 +170,7 @@ procedure Main is
         Initialiser(Pk, 1.0/N_T_Double); -- Le vecteur poids est initialise a 1/CAPACITE;
                                          --Put_Line("Vecteur poids initial : ");
                                          --Afficher(Pk);
-        Initialiser(0.0, H); -- La matrice H est initialisé à 0 partout.
+        Initialiser(0.0, H); -- La matrice H est initialisÃ© Ã  0 partout.
         Initialiser(OCC,0.0); -- Le vecteur occurence aussi.
         NL := 0; -- Compteur de nombres de lignes
         Initialiser(Fichier); --Initialise la liste qui va contenir les doublons dans le fichier.net
@@ -179,13 +179,13 @@ procedure Main is
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul, voir ligne 152 ( ATTENTION SI LA LIGNE CHANGE )
 
 
-        ------------------------------------------------------------------------ Premier parcours du fichier.net pour créer la matrice d'adjacence H du sujet.
+        ------------------------------------------------------------------------ Premier parcours du fichier.net pour crÃ©er la matrice d'adjacence H du sujet.
 
         while not End_Of_File(F) loop -- Tout le long du fichier, c'est a dire tant qu'on est pas a la fin du fichier, on repete ce qui suit :
             Get(F,Elm_Fichier);
             I:=Elm_Fichier; -- On stocke dans I l'element de la premiere colonne
             Get(F,Elm_Fichier);
-            J:=Elm_Fichier; -- On stocke dans J l'element de la deuxième colonne
+            J:=Elm_Fichier; -- On stocke dans J l'element de la deuxiÃ¨me colonne
             Enregistrer (Fichier, I, J, Test_Doublon); -- On les enregistre dans la liste Fichier et on detecte si c'est un doublon ou non.
             if Test_Doublon then
                 NL := NL + 1; -- Si c'etait un doublon, on incremente  quand meme le nombre de ligne.
@@ -208,7 +208,7 @@ procedure Main is
         --Afficher(OCC);
         --New_Line;
 
-        ------------------------------------------------------------------------ Deuxieme parcours du fichier parcours pour passer de la matrice H à S.
+        ------------------------------------------------------------------------ Deuxieme parcours du fichier parcours pour passer de la matrice H Ã  S.
 
         Open(F,In_File,-NomF);
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul
@@ -252,23 +252,23 @@ procedure Main is
         for k in 1..Nb_Iteration loop
             vectmatprod(Pk, H, Pk1);
             Pk := Pk1;
-        end loop; -- Le vecteur Pk est finalisé ici, mais non trié.
+        end loop; -- Le vecteur Pk est finalisÃ© ici, mais non triÃ©.
 
 
 
         Put_Line("Vecteur poids final : ");
-        New_line;
         Afficher(Pk);
         --New_Line;
         for i in 0..N-1 loop
             Tableau_Couple(i).poids:=Element(Pk,i);
             Tableau_Couple(i).noeud:=i;
         end loop;
-        -- Tri du Tableau_Couple selon les poids décroissants :
+        -- Tri du Tableau_Couple selon les poids dÃ©croissants :
         tri_insertion( Tableau_Couple );
-        for i in 0..N-1 loop -- Pk est trié par ordre décroissant à la fin de cette boucle.
+        for i in 0..N-1 loop -- Pk est triÃ© par ordre dÃ©croissant Ã  la fin de cette boucle.
             RemplacerElement(Pk,i,Tableau_Couple(N-1-i).poids);
         end loop;
+        Put_Line("Vecteur poids final tri�: ");
         Afficher(Pk);
 
 
@@ -295,21 +295,25 @@ procedure Main is
     procedure Creuse(N : in Integer) is
 
         package Matrice_Creuse_Double is
-                new MATRICE_CREUSE (T_Element => T_Double, CAPACITE  => N);
+                new MATRICE_CREUSE_VECTOR (T_Element => T_Double, CAPACITE  => N);
         use Matrice_Creuse_Double;
 
-        package Vector_integer is
-                new Vector (T_Element => T_Double, CAPACITE  => N);
-        use Vector_integer;
 
-        H_Creuse : T_LIGNE;
+
+
+
+        H_Creuse : T_Tableau_des_lignes;
         FichierNet : File_Type;
         Elm_Fichier : Integer;
         I : Integer;
         J : Integer;
         Test_Doublon : Boolean;
         NL : Integer;
-        OCC : T_VECTOR;
+        OCC : T_VECTOR1;
+        Pk: T_VECTOR1; -- Vecteur poids
+        Pk1: T_VECTOR1;
+        N_T_Double : constant T_Double := T_Double(N);
+
 
 
     begin
@@ -321,7 +325,9 @@ procedure Main is
         Open(FichierNet, In_File, -NomF);
         Get(FichierNet, Elm_Fichier);
         NL := 0;
-        Initialiser(OCC,0.0);
+        Initialiser(OCC, 0.0);
+        Initialiser(Pk, 1.0/N_T_Double);
+        Initialiser(Pk1, 0.0);
 
         While not End_Of_File(FichierNet) loop
             Get(FichierNet, Elm_Fichier);
@@ -338,12 +344,27 @@ procedure Main is
         end loop;
         Close(FichierNet);
 
-        --Passer de la matrice H_Creuse � S_Creuse
+
+        --Passer de la matrice H_Creuse à S_Creuse
 
         for l in 0..N-1 loop
-            RemplacerLigne(H_Creuse, l, Element(OCC, l), N);
+            RemplacerLigne(H_Creuse, l, Element(OCC, l));
         end loop;
 
+        for l in 0..N-1 loop
+            if Est_nul_Liste(H_Creuse, l) then
+                Put("Ligne nul pour indice : ");
+                put(l,1);
+                New_Line;
+            end if;
+        end loop;
+
+        for k in 1..Nb_Iteration loop
+            vectmatprod_Creuse(Pk, H_Creuse, Pk1, N, Alpha);
+            Pk := Pk1;
+        end loop;
+
+        Afficher(Pk);
 
     end Creuse;
 

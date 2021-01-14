@@ -1,16 +1,16 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
-with MATRICE_CREUSE;
+with MATRICE_CREUSE_VECTOR;
 
 procedure testmatricecreuse is
     
     Type T_Double is digits 3 ;
     
     package Matrice_Creuse_Double is
-            new MATRICE_CREUSE (T_Element => T_Double, CAPACITE  => 6);
+            new MATRICE_CREUSE_VECTOR (T_Element => T_Double, CAPACITE  => 6);
     use Matrice_Creuse_Double;
     
-    Tab : T_LIGNE;
+    Tab : T_Tableau_des_lignes;
     Doublon : Boolean;
     
 begin
