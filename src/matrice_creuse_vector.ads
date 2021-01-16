@@ -49,7 +49,7 @@ package MATRICE_CREUSE_VECTOR is
     -- Procedure utile pour afficher des listes de petite taille, notamment pour les tests.
     procedure Afficher(tableau : in T_Tableau_des_lignes);
     
-    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Tableau_des_lignes; R :  out T_VECTOR1; N : in Integer; Alpha : in T_Element );
+    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Tableau_des_lignes; R : out T_VECTOR1; N : in Integer; Alpha : in T_Element );
     
     function Est_nul_Liste (L : in T_Tableau_des_lignes; i : in Integer) return Boolean;
     
