@@ -52,6 +52,10 @@ package body MATRICE_CREUSE_VECTOR is
         V(i):=E;
     end RemplacerElement;
 
+    
+    
+    
+    
     procedure Initialiser (tableau : out T_Tableau_des_lignes) is
     begin
         for i in 0..CAPACITE-1 loop
@@ -197,7 +201,7 @@ package body MATRICE_CREUSE_VECTOR is
         for i in 0..N-1 loop
             if L(i) = null then
                 for k in 0..N-1 loop
-                    R(k) := R(k) + V(k) * T_Element(1.0)/T_Element(N);
+                    R(k) := R(k) + V(i) * T_Element(1.0)/T_Element(N);
                     --RemplacerElement(R,k,Element(R,k)+Element(V,k)*Valeur_constante);
                 end loop;
             else
@@ -205,15 +209,15 @@ package body MATRICE_CREUSE_VECTOR is
                 for k in 0..N-1 loop
                     if Courant /= null then
                         if Courant.all.Colonne = k then
-                            R(k) := R(k) + V(k) * (Alpha * Courant.all.Valeur + (T_Element(1.0)-Alpha)/T_Element(N));
+                            R(k) := R(k) + V(i) * (Alpha * Courant.all.Valeur + (T_Element(1.0)-Alpha)/T_Element(N));
                             --RemplacerElement(R, k, Element(R,k) + Element(V,k) * (Alpha * Courant.all.Valeur + ( (1.0-Alpha) / T_Element(N) ) ));
                             Courant := Courant.all.Suivant;
                         else
-                            R(k) := R(k) + V(k) * ((T_Element(1.0)-Alpha)/T_Element(N));
+                            R(k) := R(k) + V(i) * ((T_Element(1.0)-Alpha)/T_Element(N));
                             --RemplacerElement(R, k, Element(R, k) + Element(V, k) * ( ( (1.0-Alpha) / T_Element(N) ) ));
                         end if;
                     else
-                        R(k) := R(k) + V(k) * ((T_Element(1.0)-Alpha)/T_Element(N));
+                        R(k) := R(k) + V(i) * ((T_Element(1.0)-Alpha)/T_Element(N));
                         --RemplacerElement(R, k, Element(R, k) + Element(V, k) * ( ( (1.0-Alpha) / T_Element(N) ) ));
                     end if;
                 end loop;
