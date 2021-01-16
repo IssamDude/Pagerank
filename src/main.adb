@@ -327,7 +327,6 @@ procedure Main is
         NL := 0;
         Initialiser(OCC, 0.0);
         Initialiser(Pk, 1.0/N_T_Double);
-        Initialiser(Pk1, 0.0);
 
         While not End_Of_File(FichierNet) loop
             Get(FichierNet, Elm_Fichier);
@@ -351,20 +350,17 @@ procedure Main is
             RemplacerLigne(H_Creuse, l, Element(OCC, l));
         end loop;
 
-        for l in 0..N-1 loop
-            if Est_nul_Liste(H_Creuse, l) then
-                Put("Ligne nul pour indice : ");
-                put(l,1);
-                New_Line;
-            end if;
-        end loop;
+        Afficher(H_Creuse);
 
+
+        Afficher(Pk);
         for k in 1..Nb_Iteration loop
             vectmatprod_Creuse(Pk, H_Creuse, Pk1, N, Alpha);
             Pk := Pk1;
+
         end loop;
 
-        Afficher(Pk);
+
 
     end Creuse;
 

@@ -189,40 +189,38 @@ package body MATRICE_CREUSE_VECTOR is
         New_Line;
     end Afficher;
     
-    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Tableau_des_lignes; R : out T_VECTOR1; N : in Integer; Alpha : in T_Element ) is -- Multiplication d'un vecteur ligne par une matrice -- CONDITION : nb de colonne du vecteur = taille de la matrice
-        Valeur_constante : constant T_Element := 1.0/T_Element(N); -- Valeur_constant = alpha/N + (1-alpha)/N = 1/N.
+    
+    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Tableau_des_lignes; R :  out T_VECTOR1; N : in Integer; Alpha : in T_Element ) is -- Multiplication d'un vecteur ligne par une matrice -- CONDITION : nb de colonne du vecteur = taille de la matrice
         Courant : T_LISTE;
-        compteur : Integer;
     begin
         Initialiser(R, 0.0);
-        compteur := 0;
         for i in 0..N-1 loop
             if L(i) = null then
                 for k in 0..N-1 loop
-                    RemplacerElement(R,k,Element(R,k)+Element(V,k)*Valeur_constante);
+                    R(k) := R(k) + V(k) * T_Element(1.0)/T_Element(N);
+                    --RemplacerElement(R,k,Element(R,k)+Element(V,k)*Valeur_constante);
                 end loop;
-                put(compteur);
-                compteur := compteur + 1;
             else
                 Courant := L(i);
                 for k in 0..N-1 loop
                     if Courant /= null then
                         if Courant.all.Colonne = k then
-                            RemplacerElement(R, k, Element(R,k) + Element(V,k) * (Alpha * Courant.all.Valeur + ( (1.0-Alpha) / T_Element(N) ) ));
+                            R(k) := R(k) + V(k) * (Alpha * Courant.all.Valeur + (T_Element(1.0)-Alpha)/T_Element(N));
+                            --RemplacerElement(R, k, Element(R,k) + Element(V,k) * (Alpha * Courant.all.Valeur + ( (1.0-Alpha) / T_Element(N) ) ));
+                            Courant := Courant.all.Suivant;
                         else
-                            RemplacerElement(R, k, Element(R, k) + Element(V, k) * ( ( (1.0-Alpha) / T_Element(N) ) ));
+                            R(k) := R(k) + V(k) * ((T_Element(1.0)-Alpha)/T_Element(N));
+                            --RemplacerElement(R, k, Element(R, k) + Element(V, k) * ( ( (1.0-Alpha) / T_Element(N) ) ));
                         end if;
-                        Courant := Courant.all.Suivant;
                     else
-                        RemplacerElement(R, k, Element(R, k) + Element(V, k) * ( ( (1.0-Alpha) / T_Element(N) ) ));
+                        R(k) := R(k) + V(k) * ((T_Element(1.0)-Alpha)/T_Element(N));
+                        --RemplacerElement(R, k, Element(R, k) + Element(V, k) * ( ( (1.0-Alpha) / T_Element(N) ) ));
                     end if;
-                    
                 end loop;
             end if;
-            
-            
         end loop;
     end vectmatprod_Creuse;
+    
     
     function Est_nul_Liste (L : in T_Tableau_des_lignes; i : in Integer) return Boolean is 
     begin
