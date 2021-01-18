@@ -1,8 +1,13 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
+with Ada.Unchecked_Deallocation;
+
 
 package body MATRICE_CREUSE_VECTOR is
     
+    
+    procedure Free is
+            new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_LISTE);
     
     procedure Initialiser (vecteur : out T_VECTOR1 ; N : in T_Element ) is
     begin
@@ -52,7 +57,7 @@ package body MATRICE_CREUSE_VECTOR is
         V(i):=E;
     end RemplacerElement;
 
-    procedure Initialiser (tableau : out T_Tableau_des_lignes) is
+    procedure Initialiser (tableau : out T_Matrice_Creuse) is
     begin
         for i in 0..CAPACITE-1 loop
             tableau(i) := null;
@@ -61,7 +66,7 @@ package body MATRICE_CREUSE_VECTOR is
     
     
     
-    function Est_Present (tableau : in T_Tableau_des_lignes; i : in Integer; j : in Integer) return Boolean is
+    function Est_Present (tableau : in T_Matrice_Creuse; i : in Integer; j : in Integer) return Boolean is
         
         function Est_Present_liste (liste : in T_LISTE; j : in Integer) return Boolean is
             Resultat : Boolean;
@@ -83,7 +88,7 @@ package body MATRICE_CREUSE_VECTOR is
 
     
     
-    procedure Enregistrer (tableau : in out T_Tableau_des_lignes; i : in Integer; j : in Integer; val : in T_Element; Doublon : out Boolean) is
+    procedure Enregistrer (tableau : in out T_Matrice_Creuse; i : in Integer; j : in Integer; val : in T_Element; Doublon : out Boolean) is
         
         procedure Enregistrer_Liste (liste : in out T_LISTE; j : in Integer; val : in T_Element; Doublon : out Boolean) is
         Courant : T_LISTE;
@@ -136,7 +141,7 @@ package body MATRICE_CREUSE_VECTOR is
     end Enregistrer;
     
     
-    procedure RemplacerLigne (tableau : in out T_Tableau_des_lignes; i : in Integer; occurence : in T_Element) is -- N à supprimer
+    procedure RemplacerLigne (tableau : in out T_Matrice_Creuse; i : in Integer; occurence : in T_Element) is -- N à supprimer
         Courant : T_LISTE;
     begin
         Courant := tableau(i);
@@ -157,7 +162,7 @@ package body MATRICE_CREUSE_VECTOR is
     
     
            
-    procedure Afficher(tableau : in T_Tableau_des_lignes) is
+    procedure Afficher(tableau : in T_Matrice_Creuse) is
         
         procedure Afficher_Liste(liste : in T_LISTE; i : in Integer) is
             Courant : T_LISTE;
@@ -189,7 +194,7 @@ package body MATRICE_CREUSE_VECTOR is
         New_Line;
     end Afficher;
     
-    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Tableau_des_lignes; R : out T_VECTOR1; N : in Integer; Alpha : in T_Element ) is -- Multiplication d'un vecteur ligne par une matrice -- CONDITION : nb de colonne du vecteur = taille de la matrice
+    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Matrice_Creuse; R : out T_VECTOR1; N : in Integer; Alpha : in T_Element ) is -- Multiplication d'un vecteur ligne par une matrice -- CONDITION : nb de colonne du vecteur = taille de la matrice
         Valeur_constante : constant T_Element := 1.0/T_Element(N); -- Valeur_constant = alpha/N + (1-alpha)/N = 1/N.
         Courant : T_LISTE;
        
@@ -230,10 +235,28 @@ package body MATRICE_CREUSE_VECTOR is
         end loop;
     end vectmatprod_Creuse;
     
-    function Est_nul_Liste (L : in T_Tableau_des_lignes; i : in Integer) return Boolean is 
+    
+    
+    function Est_nul_Liste (L : in T_Matrice_Creuse; i : in Integer) return Boolean is 
     begin
         return L(i) = null;
     end Est_nul_Liste;
+    
+    
+    
+    procedure Vider (L : in out  T_Matrice_Creuse) is
+        procedure Vider_Liste(liste : in out T_LISTE) is 
+        begin
+            if liste /= null then
+                Vider_Liste(liste.all.Suivant);
+                Free ( liste );
+            end if;
+        end Vider_Liste;
+    begin
+        for k in 0..CAPACITE-1 loop
+            Vider_Liste(L(k));
+        end loop;
+    end Vider;
     
     
 end MATRICE_CREUSE_VECTOR;

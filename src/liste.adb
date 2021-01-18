@@ -1,9 +1,11 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
-
+with Ada.Unchecked_Deallocation;
 
 package body LISTE is
     
+    procedure Free is
+            new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_LISTE);
     
     procedure Initialiser (liste : out T_LISTE) is
     begin
@@ -126,5 +128,13 @@ package body LISTE is
         end loop;
     end Afficher;
     
+    
+    procedure Vider(liste : in out T_LISTE) is 
+    begin
+        if liste /= null then
+            Vider(liste.all.Suivant);
+            Free(liste);
+        end if;
+    end Vider;
 
 end LISTE;

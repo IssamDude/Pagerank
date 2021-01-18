@@ -6,7 +6,7 @@ generic
 package MATRICE_CREUSE_VECTOR is
    
 
-    type T_Tableau_des_lignes is  private;
+    type T_Matrice_Creuse is  private;
     
     type T_VECTOR1 is private;
     
@@ -34,24 +34,26 @@ package MATRICE_CREUSE_VECTOR is
     
     
     -- Initialisation d'une liste a NULL.
-    procedure Initialiser (tableau : out T_Tableau_des_lignes);
+    procedure Initialiser (tableau : out T_Matrice_Creuse);
     
     -- Fonctionne qui renvoie True si et seulement si lorsque le couple (i,j) est present dans une liste.
-    function Est_Present (tableau : in T_Tableau_des_lignes; i : in Integer; j : in Integer) return Boolean;  
+    function Est_Present (tableau : in T_Matrice_Creuse; i : in Integer; j : in Integer) return Boolean;  
     
     --Cette fonction enregistre une cellule de tel sorte qu'elle respecte l'ordre des elements (cet ordre est defini
     --par la fonction Comparer defini dans Enregistrer) et rend un Booleen True si l'element est deja present dans la liste 
     --Si l'element (i,j) est présent, la valeur correspondante est remplacée par val  
-    procedure Enregistrer (tableau : in out T_Tableau_des_lignes; i : in Integer; j : in Integer; val : in T_Element; Doublon : out Boolean);
+    procedure Enregistrer (tableau : in out T_Matrice_Creuse; i : in Integer; j : in Integer; val : in T_Element; Doublon : out Boolean);
     
-    procedure RemplacerLigne (tableau : in out T_Tableau_des_lignes; i : in Integer; occurence : in T_Element);
+    procedure RemplacerLigne (tableau : in out T_Matrice_Creuse; i : in Integer; occurence : in T_Element);
     
     -- Procedure utile pour afficher des listes de petite taille, notamment pour les tests.
-    procedure Afficher(tableau : in T_Tableau_des_lignes);
+    procedure Afficher(tableau : in T_Matrice_Creuse);
     
-    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Tableau_des_lignes; R : out T_VECTOR1; N : in Integer; Alpha : in T_Element );
+    procedure vectmatprod_Creuse ( V : in T_VECTOR1; L : in T_Matrice_Creuse; R : out T_VECTOR1; N : in Integer; Alpha : in T_Element );
     
-    function Est_nul_Liste (L : in T_Tableau_des_lignes; i : in Integer) return Boolean;
+    function Est_nul_Liste (L : in T_Matrice_Creuse; i : in Integer) return Boolean;
+    
+    procedure Vider (L : in out T_Matrice_Creuse);
     
 private
     
@@ -69,7 +71,7 @@ private
         end record;
     
     
-    type T_Tableau_des_lignes is array (0..CAPACITE-1) of T_LISTE;
+    type T_Matrice_Creuse is array (0..CAPACITE-1) of T_LISTE;
     
             
 end MATRICE_CREUSE_VECTOR;

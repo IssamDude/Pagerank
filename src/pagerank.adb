@@ -8,7 +8,7 @@ with LISTE; use LISTE;
 with Command_Exception; use Command_Exception;
 with MATRICE_CREUSE_VECTOR;
 
-procedure Main is
+procedure PageRank is
 
     Type T_Double is digits 6; -- Precision variable, grace a la generecite du type T_Element.
 
@@ -18,7 +18,7 @@ procedure Main is
     function "-" (Item : in Unbounded_String) return String
                   renames To_String;
 
-    NN : Integer;  -- Le nombre de noeuds de notre reseau, indique dans la premiere ligne de tous les fichiers.net
+    NombreNoeuds : Integer;  -- Le nombre de noeuds de notre reseau, indique dans la premiere ligne de tous les fichiers.net
     Elm_Fichier: Integer; -- Entiers present dans les fichiers.net
     F: File_Type; -- Fichier.net
     NomF : Unbounded_String := +"exemple_sujet.net";
@@ -29,7 +29,7 @@ procedure Main is
 
 
 
-    procedure Gestion_Command (Nb_Argument : in Integer) is -- ProcÃÂ©dure qui gÃÂ¨re la ligne de commande
+    procedure Gestion_Command (Nb_Argument : in Integer) is -- Procedure qui gere la ligne de commande
 
         Taille_nom_fichier : Integer;
         Compt : Integer := 0;
@@ -100,38 +100,41 @@ procedure Main is
     end Gestion_Command;
 
 
-    Procedure Naive (N : in integer) is  -- Notre procedure principale, prend en argument N qui est NN : Le nombre de noeuds de notre reseau.
+
+
+
+    Procedure pagerank_t (NombreNoeuds : in integer) is  -- Notre procedure principale, prend en argument N qui est NN : Le nombre de noeuds de notre reseau.
         package MATRIX_INTEGER is
-                new MATRIX (T_Element => T_Double, CAPACITE  => N);
+                new MATRIX (T_Element => T_Double, CAPACITE  => NombreNoeuds);
         use MATRIX_INTEGER;
 
         package Vector_integer is
-                new Vector (T_Element => T_Double, CAPACITE  => N);
+                new Vector (T_Element => T_Double, CAPACITE  => NombreNoeuds);
         use Vector_integer;
 
         H : T_MATRIX; -- Matrice naive que l'on va manipuler tout le long du programme
         OCC : T_VECTOR;  -- Vecteur dans lequel on met le nombre d'occurence de chaque noeud
-        CAPACITE :constant Integer := N; -- Capacite du type vecteur et matrice
+        CAPACITE :constant Integer := NombreNoeuds; -- Capacite du type vecteur et matrice
         I : Integer; -- Ligne de la matrice H/ Element de la premiere colonne du fichier
         J : Integer; -- Colonne de la matrice H/ Element de la deuxieme colonne du fichier
         Elm_Fichier : Integer; --Entier qui stocke les elements qu'on recupere des fichiers
         F: File_Type; --Fichier qu'on va ouvrir
         NL : Integer; -- Nombre de lignes du fichier
-        N_T_Double : constant T_Double := T_Double(N); -- Variable qui stocke la conversion de l'entier N en T_Double.
-        Pk: T_VECTOR; -- Vecteur poids
-        Pk1: T_VECTOR;
-        --Pr: T_VECTOR; --pagerank vector
-        Fichier : T_LISTE; --Liste qui va contenir les elements du fichier.net tries sans les doublons
+        N_T_Double : constant T_Double := T_Double(NombreNoeuds); -- Variable qui stocke la conversion de l'entier N en T_Double.
+        Pk: T_VECTOR; -- Vecteur poids � l'it�ration k
+        Pk1: T_VECTOR; --Vecteur poids � l'it�ration k+1
+        Liste_Contenant_Reseau : T_LISTE; --Liste qui va contenir les elements du fichier.net tries sans les doublons
         Courant : T_LISTE;
         Test_Doublon : Boolean;
         Fichier_poids : File_Type; -- Fichier.p en sortie.
         Fichier_noeuds : File_Type; -- Fichier.ord en sortie.
 
-        type T_Couple is record
+        type T_Couple is record -- On cr�e un nouveau type contenant le poids de chaque noeud et le numero du noeud correpondant
             poids : T_Double;
             noeud : Integer;
         end record;
-        type T_Tableau_couple is array (0..N-1) of T_Couple;
+        type T_Tableau_couple is array (0..NombreNoeuds-1) of T_Couple; -- Tableau contenant des couples (poids, noeud_correpondant). Ce tableau est utilise pour trier les poids et avoir le noeud associe a la fin
+
 
         Tableau_Couple : T_Tableau_couple;
 
@@ -152,7 +155,7 @@ procedure Main is
             y : integer; -- ParamÃÂ¨tre formel reprÃÂ©sentant le noeud d'un couple
             j : integer;
         begin
-            for i in 1..N-1 loop
+            for i in 1..NombreNoeuds-1 loop
                 x := T(i).poids;
                 y := T(i).noeud;
                 j := i ;
@@ -173,7 +176,7 @@ procedure Main is
         Initialiser(0.0, H); -- La matrice H est initialisÃÂ© ÃÂ  0 partout.
         Initialiser(OCC,0.0); -- Le vecteur occurence aussi.
         NL := 0; -- Compteur de nombres de lignes
-        Initialiser(Fichier); --Initialise la liste qui va contenir les doublons dans le fichier.net
+        Initialiser(Liste_Contenant_Reseau);
 
         Open(F,In_File,-NomF);
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul, voir ligne 152 ( ATTENTION SI LA LIGNE CHANGE )
@@ -186,7 +189,7 @@ procedure Main is
             I:=Elm_Fichier; -- On stocke dans I l'element de la premiere colonne
             Get(F,Elm_Fichier);
             J:=Elm_Fichier; -- On stocke dans J l'element de la deuxiÃÂ¨me colonne
-            Enregistrer (Fichier, I, J, Test_Doublon); -- On les enregistre dans la liste Fichier et on detecte si c'est un doublon ou non.
+            Enregistrer (Liste_Contenant_Reseau, I, J, Test_Doublon); -- On les enregistre dans la liste Fichier et on detecte si c'est un doublon ou non.
             if Test_Doublon then
                 NL := NL + 1; -- Si c'etait un doublon, on incremente  quand meme le nombre de ligne.
             else
@@ -208,19 +211,19 @@ procedure Main is
         --Afficher(OCC);
         --New_Line;
 
-        ------------------------------------------------------------------------ Deuxieme parcours du fichier parcours pour passer de la matrice H ÃÂ  S.
+        ------------------------------------------------------------------------ Deuxieme parcours du fichier parcours pour passer de la matrice H a� S.
 
         Open(F,In_File,-NomF);
         Get(F,Elm_Fichier); --On fait un premier get car on a deja recuperer la valeur de NN en dehors de la procedure Calcul
 
         Initialiser(Courant);
 
-        Assigner(Fichier, Courant);
+        Assigner(Liste_Contenant_Reseau, Courant);
 
-        for K in 0..N-1 loop
+        for K in 0..NombreNoeuds-1 loop
             if Element(OCC,K) = 0.0 then -- Ici, les lignes vides de la matrice H vont toutes avoir comme valeurs le float 1/Nombre_de_noeuds.
 
-                for L in 0..N-1 loop
+                for L in 0..NombreNoeuds-1 loop
                     RemplacerElement(H, K, L, (1.0/N_T_Double));
                 end loop;
             else   -- Ici, les lignes non vides de la matrice H vont avoir les elements non nuls changes de 1.0 au reel 1/Le_nombre_de_1.0_dans_la_ligne
@@ -245,87 +248,124 @@ procedure Main is
 
         --Afficher(H);
         Ajoutconstante(H, (1.0-alpha)/N_T_Double);
-        --Put_Line("Matrice G");
+        --Put_Line("Matrice G: ");
         --Afficher(H); -- Qui est en fait la matrice G.
 
         ------------------------------------------------------------------------ On calcule matriciellement le poids de chaque noeud.
         for k in 1..Nb_Iteration loop
             vectmatprod(Pk, H, Pk1);
             Pk := Pk1;
-            --afficher(Pk);
-        end loop; -- Le vecteur Pk est finalisÃÂ© ici, mais non triÃÂ©.
+        end loop; -- Le vecteur Pk est finalise ici, mais non trie.
 
 
 
-        Put_Line("Vecteur poids final : ");
-        Afficher(Pk);
+        --Put_Line("Vecteur poids final : "); --Pour afficher le vecteur poid final
+        --Afficher(Pk);
         --New_Line;
-        for i in 0..N-1 loop
+
+        for i in 0..NombreNoeuds-1 loop
             Tableau_Couple(i).poids:=Element(Pk,i);
             Tableau_Couple(i).noeud:=i;
         end loop;
-        -- Tri du Tableau_Couple selon les poids dÃÂ©croissants :
+        -- Tri du Tableau_Couple selon les poids decroissants :
         tri_insertion( Tableau_Couple );
-        for i in 0..N-1 loop -- Pk est triÃÂ© par ordre dÃÂ©croissant ÃÂ  la fin de cette boucle.
-            RemplacerElement(Pk,i,Tableau_Couple(N-1-i).poids);
+        for i in 0..NombreNoeuds-1 loop -- Pk est trie par ordre decroissant a la fin de cette boucle.
+            RemplacerElement(Pk,i,Tableau_Couple(NombreNoeuds-1-i).poids);
         end loop;
-        Put_Line("Vecteur poids final trié: ");
+        --Put_Line ("Vecteur poids final trie: ");
         --Afficher(Pk);
+        --New_Line;
 
 
-        --Creation du fichier poids.p
+        ------------------------------------------------------------------------ Creation du fichier poids.p
         Create (Fichier_poids, Out_File, "poids.p");
-        Put_Line(Fichier_poids, Integer'Image(N) & T_Double'Image(Alpha) & Integer'Image(Nb_Iteration) );
-        for i in 0..N-1 loop
+        Put_Line(Fichier_poids, Integer'Image(NombreNoeuds) & T_Double'Image(Alpha) & Integer'Image(Nb_Iteration) );
+        for i in 0..NombreNoeuds-1 loop
             Put_Line (Fichier_poids, T_Double'Image(Element(Pk, i) ));
         end loop;
         Close (Fichier_poids);
 
-        -- Creation du fichier pagerank.ord
+        ------------------------------------------------------------------------ Creation du fichier pagerank.ord
         Create (Fichier_noeuds, Out_File, "pagerank.ord");
-        for i in 0..N-1 loop
-            Put_Line (Fichier_noeuds, Integer'Image(Tableau_Couple(N-1-i ).noeud));
+        for i in 0..NombreNoeuds-1 loop
+            Put_Line (Fichier_noeuds, Integer'Image(Tableau_Couple(NombreNoeuds-1-i ).noeud));
         end loop;
         Close (Fichier_noeuds);
 
 
-    end Naive;
+
+        Put_Line("Les deux fichiers poids.p et pagerank.ord ont ete crees. ");
+        New_Line;
+
+
+        ------------------------------------------------------------------------ Vider les listes contenus dans le tableau H_Creuse
+        Vider(Liste_Contenant_Reseau);
+
+    end pagerank_t;
 
 
 
-    procedure Creuse(N : in Integer) is
+
+    procedure pagerank_c (NombreNoeuds : in Integer) is
 
         package Matrice_Creuse_Double is
-                new MATRICE_CREUSE_VECTOR (T_Element => T_Double, CAPACITE  => N);
+                new MATRICE_CREUSE_VECTOR (T_Element => T_Double, CAPACITE  => NombreNoeuds);
         use Matrice_Creuse_Double;
 
 
+        type T_Couple is record  -- On cr�e un nouveau type contenant le poids de chaque noeud et le numero du noeud correpondant
+            poids : T_Double;
+            noeud : Integer;
+        end record;
+        type T_Tableau_couple is array (0..NombreNoeuds-1) of T_Couple; -- Tableau contenant des couples (poids, noeud_correpondant). Ce tableau est utilise pour trier les poids et avoir le noeud associe a la fin
+
+        Tableau_Couple : T_Tableau_couple;
 
 
 
-        H_Creuse : T_Tableau_des_lignes;
+
+        H_Creuse : T_Matrice_Creuse;
         FichierNet : File_Type;
         Elm_Fichier : Integer;
         I : Integer;
         J : Integer;
         Test_Doublon : Boolean;
-        NL : Integer;
+        NombreLigne : Integer;
         OCC : T_VECTOR1;
         Pk: T_VECTOR1; -- Vecteur poids
         Pk1: T_VECTOR1;
-        N_T_Double : constant T_Double := T_Double(N);
+        N_T_Double : constant T_Double := T_Double(NombreNoeuds);
+        Fichier_poids : File_Type; -- Fichier.p en sortie.
+        Fichier_noeuds : File_Type; -- Fichier.ord en sortie.
+
+        procedure tri_insertion( T : in out T_Tableau_couple) is -- Tri du tableau contenant les couples (poids, noeuds) par ordre croissant des noeuds.
+            x : T_Double; -- Parametre formel representant le poids d'un couple
+            y : integer; -- Parametre formel representant le noeud d'un couple
+            j : integer;
+        begin
+            for i in 1..NombreNoeuds-1 loop
+                x := T(i).poids;
+                y := T(i).noeud;
+                j := i ;
+                while j > 0 and then T(j - 1).poids > x loop
+                    T(j):= T(j - 1);
+                    j := j - 1;
+                end loop;
+                T(j).poids := x;
+                T(j).noeud := y;
+            end loop;
+        end tri_insertion;
 
 
 
     begin
-        --Put_Line("Implantation Creuse pas encore prete. Veuillez ajouter -P dans la ligne de commande pour utiliser l'implantation Naive");
 
-        --Creer la matrice H_Creuse
+        ------------------------------------------------------------------------ Creation de la matrice H_Creuse
 
         Initialiser(H_Creuse);
         Open(FichierNet, In_File, -NomF);
         Get(FichierNet, Elm_Fichier);
-        NL := 0;
+        NombreLigne := 0;
         Initialiser(OCC, 0.0);
         Initialiser(Pk, 1.0/N_T_Double);
         Initialiser(Pk1, 0.0);
@@ -337,35 +377,89 @@ procedure Main is
             J := Elm_Fichier;
             Enregistrer(H_Creuse, I, J, T_Double(1), Test_Doublon);
             if Test_Doublon then
-                NL := NL + 1;
+                NombreLigne := NombreLigne + 1;
             else
-                NL := NL + 1;
+                NombreLigne := NombreLigne + 1;
                 RemplacerElement(OCC, I, Element(OCC, I) + 1.0);
             end if;
         end loop;
         Close(FichierNet);
 
+        --Pour afficher la matrice creuse
+        --Put_Line("Matrice H Creuse : ");
+        --Afficher(H_Creuse);
 
-        --Passer de la matrice H_Creuse Ã  S_Creuse
 
-        for l in 0..N-1 loop
+
+        ------------------------------------------------------------------------ Passer de la matrice H_Creuse a S_Creuse
+
+        for l in 0..NombreNoeuds-1 loop
             RemplacerLigne(H_Creuse, l, Element(OCC, l));
         end loop;
 
-        Afficher(H_Creuse);
+        --Pour afficher la matrice creuse:
+        --Put_Line("Matrice S Creuse : ");
+        --Afficher(H_Creuse);
 
 
 
         for k in 1..Nb_Iteration loop
-            vectmatprod_Creuse(Pk, H_Creuse, Pk1, N, Alpha);
+            vectmatprod_Creuse(Pk, H_Creuse, Pk1, NombreNoeuds, Alpha);
             Pk := Pk1;
-            --Afficher(Pk);
-
         end loop;
 
-        Afficher(Pk);
 
-    end Creuse;
+        --Put_Line("Vecteur poids final : ");
+        --Afficher(Pk);
+        --New_Line;
+
+
+
+        ------------------------------------------------------------------------ Stockage du couple (poids, noeud correspondant) dans un tableau
+        for i in 0..NombreNoeuds-1 loop
+            Tableau_Couple(i).poids:=Element(Pk,i);
+            Tableau_Couple(i).noeud:=i;
+        end loop;
+
+        ------------------------------------------------------------------------ Tri du Tableau_Couple selon les poids decroissants :
+        tri_insertion( Tableau_Couple );
+
+
+
+        for i in 0..NombreNoeuds-1 loop -- Pk est trie par ordre decroissant a la fin de cette boucle.
+            RemplacerElement(Pk,i,Tableau_Couple(NombreNoeuds-1-i).poids);
+        end loop;
+
+        --Put_Line("Vecteur poids final tri�: ");
+        --Afficher(Pk);
+        --New_Line;
+
+
+        ------------------------------------------------------------------------ Creation du fichier poids.p
+        Create (Fichier_poids, Out_File, "poids.p");
+        Put_Line(Fichier_poids, Integer'Image(NombreNoeuds) & T_Double'Image(Alpha) & Integer'Image(Nb_Iteration) );
+        for i in 0..NombreNoeuds-1 loop
+            Put_Line (Fichier_poids, T_Double'Image(Element(Pk, i) ));
+        end loop;
+        Close (Fichier_poids);
+
+        ------------------------------------------------------------------------ Creation du fichier pagerank.ord
+        Create (Fichier_noeuds, Out_File, "pagerank.ord");
+        for i in 0..NombreNoeuds-1 loop
+            Put_Line (Fichier_noeuds, Integer'Image(Tableau_Couple(NombreNoeuds-1-i ).noeud));
+        end loop;
+        Close (Fichier_noeuds);
+
+
+
+        Put_Line("Les deux fichiers poids.p et pagerank.ord ont ete crees. ");
+        New_Line;
+
+
+        ------------------------------------------------------------------------ Vider les listes contenus dans le tableau H_Creuse
+        Vider(H_Creuse);
+
+    end pagerank_c;
 
 begin
 
@@ -374,19 +468,19 @@ begin
 
     Open(F,In_File,-NomF);
     Get(F,Elm_Fichier); -- On GET le premier nombre du fichier.net qui correspond au nombre de noeuds NN.
-    NN:=Elm_Fichier; -- On stocke ce nombre.
+    NombreNoeuds:=Elm_Fichier; -- On stocke ce nombre.
     Close(F);
 
 
     if Implantation = +"Naive" then
-        Naive(NN);
+        pagerank_t(NombreNoeuds);
     elsif Implantation = +"Creuse" then
-        Creuse(NN);
+        pagerank_c(NombreNoeuds);
     end if;
 
 
     Put("Le nombre de noeuds est : ");
-    Put(NN, 1);
+    Put(NombreNoeuds, 1);
     New_Line;
     Put("Nb iterations : ");
     Put(Nb_Iteration, 1);
@@ -400,5 +494,5 @@ exception
         Put_Line("Erreur: Les parametres entres dans la ligne de commande sont incompatibles");
     when Name_Error =>
         Put_Line("Erreur: Le fichier entre n'est pas present dans le repertoire");
-end Main;
+end PageRank;
 

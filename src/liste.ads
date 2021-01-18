@@ -28,6 +28,8 @@ package LISTE is
     -- Procedure utile pour afficher des listes de petite taille, notamment pour les tests.
     procedure Afficher(liste : in T_LISTE);
     
+    procedure Vider(liste : in out T_LISTE);
+    
 private
     
     type T_Cellule;
