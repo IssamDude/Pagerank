@@ -23,7 +23,7 @@ procedure PageRank is
     F: File_Type; -- Fichier.net
     NomF : Unbounded_String := +"exemple_sujet.net";
     Alpha : T_Double := 0.85; -- qu'il faut changer en fonction de la ligne de commande
-    Nb_Iteration : integer := 150; -- qu'il faut changer en fonction de la ligne de commande
+    Nombre_Iteration : integer := 150; -- qu'il faut changer en fonction de la ligne de commande
     Implantation : Unbounded_String := +"Creuse";
     Nb_Argument : Integer;
 
@@ -69,7 +69,7 @@ procedure PageRank is
             for K in 1..Nb_Argument-1 loop
                 if Argument(K) = "-I" then
                     if Integer'Value(Argument(K+1)) > 0 and Nb_I = 0 then
-                        Nb_Iteration := Integer'Value(Argument(K+1));
+                        Nombre_Iteration := Integer'Value(Argument(K+1));
                         Nb_I := Nb_I + 1;
                     else
                         raise Parametre_Command_Exception;
@@ -151,8 +151,8 @@ procedure PageRank is
             end loop;
         end vectmatprod;
         procedure tri_insertion( T : in out T_Tableau_couple) is -- Tri du tableau contenant les couples (poids, noeuds) par ordre croissant des noeuds.
-            x : T_Double; -- ParamÃÂ¨tre formel reprÃÂ©sentant le poids d'un couple
-            y : integer; -- ParamÃÂ¨tre formel reprÃÂ©sentant le noeud d'un couple
+            x : T_Double; -- Parametre formel representant le poids d'un couple
+            y : integer; -- Parametre formel representant le noeud d'un couple
             j : integer;
         begin
             for i in 1..NombreNoeuds-1 loop
@@ -201,15 +201,7 @@ procedure PageRank is
         end loop;
         Close(F);  -- Pour ne pas encombrer la memoire, on ferme le fichier.net
 
-        -- Pour visionner ce qui se passe sur des fichier .net avec peu de noeuds ( moins de 10 ), decommentez les lignes suivantes :
 
-        --Put_Line("La Matrice H : ");
-        --New_Line;
-        --Afficher(H);
-        --New_Line;
-        --Put_Line("Le vecteur d'occurrences OCC :");
-        --Afficher(OCC);
-        --New_Line;
 
         ------------------------------------------------------------------------ Deuxieme parcours du fichier parcours pour passer de la matrice H a� S.
 
@@ -222,7 +214,6 @@ procedure PageRank is
 
         for K in 0..NombreNoeuds-1 loop
             if Element(OCC,K) = 0.0 then -- Ici, les lignes vides de la matrice H vont toutes avoir comme valeurs le float 1/Nombre_de_noeuds.
-
                 for L in 0..NombreNoeuds-1 loop
                     RemplacerElement(H, K, L, (1.0/N_T_Double));
                 end loop;
@@ -237,12 +228,8 @@ procedure PageRank is
         end loop;
         Close(F);
 
-        -- Pareil, decommentez les lignes suivantes si vous souhaitez voir ce changement sur des petites matrices.
 
-        --Afficher(H); -- Qui est en fait la matrice S
-        --New_Line;
-
-        --Dans cette partie, on modifie la matrice S pour obtenir la matrice G
+        ------------------------------------------------------------------------ Dans cette partie, on modifie la matrice S pour obtenir la matrice G
 
         Produit_Par_Scalaire(H,Alpha);
 
@@ -252,7 +239,7 @@ procedure PageRank is
         --Afficher(H); -- Qui est en fait la matrice G.
 
         ------------------------------------------------------------------------ On calcule matriciellement le poids de chaque noeud.
-        for k in 1..Nb_Iteration loop
+        for k in 1..Nombre_Iteration loop
             vectmatprod(Pk, H, Pk1);
             Pk := Pk1;
         end loop; -- Le vecteur Pk est finalise ici, mais non trie.
@@ -279,7 +266,7 @@ procedure PageRank is
 
         ------------------------------------------------------------------------ Creation du fichier poids.p
         Create (Fichier_poids, Out_File, "poids.p");
-        Put_Line(Fichier_poids, Integer'Image(NombreNoeuds) & T_Double'Image(Alpha) & Integer'Image(Nb_Iteration) );
+        Put_Line(Fichier_poids, Integer'Image(NombreNoeuds) & T_Double'Image(Alpha) & Integer'Image(Nombre_Iteration) );
         for i in 0..NombreNoeuds-1 loop
             Put_Line (Fichier_poids, T_Double'Image(Element(Pk, i) ));
         end loop;
@@ -292,7 +279,7 @@ procedure PageRank is
         end loop;
         Close (Fichier_noeuds);
 
-
+        Put_Line("Vous avez choisi l'implantation naive.");
 
         Put_Line("Les deux fichiers poids.p et pagerank.ord ont ete crees. ");
         New_Line;
@@ -403,7 +390,7 @@ procedure PageRank is
 
 
 
-        for k in 1..Nb_Iteration loop
+        for k in 1..Nombre_Iteration loop
             vectmatprod_Creuse(Pk, H_Creuse, Pk1, NombreNoeuds, Alpha);
             Pk := Pk1;
         end loop;
@@ -437,7 +424,7 @@ procedure PageRank is
 
         ------------------------------------------------------------------------ Creation du fichier poids.p
         Create (Fichier_poids, Out_File, "poids.p");
-        Put_Line(Fichier_poids, Integer'Image(NombreNoeuds) & T_Double'Image(Alpha) & Integer'Image(Nb_Iteration) );
+        Put_Line(Fichier_poids, Integer'Image(NombreNoeuds) & T_Double'Image(Alpha) & Integer'Image(Nombre_Iteration) );
         for i in 0..NombreNoeuds-1 loop
             Put_Line (Fichier_poids, T_Double'Image(Element(Pk, i) ));
         end loop;
@@ -451,6 +438,7 @@ procedure PageRank is
         Close (Fichier_noeuds);
 
 
+        Put_Line("Vous avez choisi l'implantation creuse.");
 
         Put_Line("Les deux fichiers poids.p et pagerank.ord ont ete crees. ");
         New_Line;
@@ -458,6 +446,7 @@ procedure PageRank is
 
         ------------------------------------------------------------------------ Vider les listes contenus dans le tableau H_Creuse
         Vider(H_Creuse);
+
 
     end pagerank_c;
 
@@ -483,7 +472,7 @@ begin
     Put(NombreNoeuds, 1);
     New_Line;
     Put("Nb iterations : ");
-    Put(Nb_Iteration, 1);
+    Put(Nombre_Iteration, 1);
     New_Line;
     Put("Alpha : ");
     Put(Alpha'Image);
